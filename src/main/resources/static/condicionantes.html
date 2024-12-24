@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Condicionantes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <h1>Gerenciar Condicionantes</h1>
+</header>
+<div id="main-content-wrapper">
+    <main>
+        <!-- Filtros -->
+        <div class="filtros">
+            <select id="filtro-obra">
+                <option value="">Todas as Obras</option>
+            </select>
+            <select id="filtro-status">
+                <option value="">Todos os Status</option>
+            </select>
+            <input type="text" id="filtro-id" placeholder="Pesquisar ID" />
+            <button id="btn-filtrar" onclick="carregarCondicionantes()">Filtrar</button>
+            <span id="loading-spinner" style="display: none; margin-left: 8px;">
+        <div class="spinner"></div>
+    </span>
+        </div>
+
+
+        <!-- Lista de Condicionantes -->
+        <section class="condicionantes">
+            <h2>Resultados <span id="total-condicionantes" style="font-size: 0.8em; color: gray;"></span></h2>
+            <div class="cards" id="cards-container">
+                <!-- Os registros aparecerão aqui -->
+            </div>
+        </section>
+    </main>
+</div>
+
+<div class="add-button" onclick="abrirModalAdicionar()">
+    <span class="tooltip">Adicionar Condicionante</span>
+    <i class="icon-plus"></i>
+</div>
+
+
+<!-- Modal para detalhes -->
+<div id="modal-condicionante" class="modal" style="display: none;">
+    <div class="modal-content">
+        <button id="editar-condicionante" onclick="abrirModalEditar()">Editar</button>
+        <button class="close-button" onclick="fecharModal()">&times;</button>
+        <h2>Detalhes do Condicionante</h2>
+        <p><strong>ID:</strong> <span id="modal-condicionante-id"></span></p>
+        <p><strong>Obra:</strong> <span id="modal-condicionante-obra"></span></p>
+        <p><strong>Descrição:</strong> <span id="modal-condicionante-descricao"></span></p>
+        <p><strong>Identificação:</strong> <span id="modal-condicionante-identificacao"></span></p>
+        <p><strong>Status:</strong> <span id="modal-condicionante-status"></span></p>
+        <p><strong>Comprovação:</strong> <a id="modal-condicionante-comprovacao" href="#" target="_blank" style="word-break: break-word;"></a></p>
+        <p><strong>Prazo de Vencimento:</strong> <span id="modal-condicionante-prazo"></span></p>
+        <p><strong>Ação de Atendimento:</strong> <span id="modal-condicionante-acao"></span></p>
+        <p><strong>Situação:</strong> <span id="modal-condicionante-situacao"></span></p>
+        <p><strong>Comprovação Protocolada:</strong> <span id="modal-condicionante-protocolo"></span></p>
+        <p><strong>Responsável (Terceiros):</strong> <span id="modal-condicionante-resp-terceiros"></span></p>
+        <p><strong>Responsável (Cliente):</strong> <span id="modal-condicionante-resp-cliente"></span></p>
+        <p><strong>Responsável (Zago):</strong> <span id="modal-condicionante-resp-zago"></span></p>
+        <p><strong>Data de Atendimento:</strong> <span id="modal-condicionante-data"></span></p>
+    </div>
+</div>
+
+<div id="modal-adicionar" class="modal" style="display: none;">
+    <div class="modal-content">
+        <button class="close-button" onclick="fecharModalAdicionar()">&times;</button>
+        <h2 id="modal-title">Adicionar Condicionante</h2>
+        <form id="form-adicionar">
+            <!-- Obra -->
+            <div class="form-group">
+                <label for="obra-adicionar">Obra:</label>
+                <select id="obra-adicionar" required>
+                    <option value="">Selecione uma obra</option>
+                </select>
+            </div>
+            <!-- Descrição -->
+            <div class="form-group">
+                <label for="condicionante-adicionar">Descrição:</label>
+                <textarea id="condicionante-adicionar" placeholder="Descrição da condicionante" required></textarea>
+            </div>
+            <!-- Identificação -->
+            <div class="form-group">
+                <label for="identificacao-adicionar">Identificação:</label>
+                <input type="text" id="identificacao-adicionar" placeholder="Identificação" required>
+            </div>
+            <!-- Status -->
+            <div class="form-group">
+                <label for="status-adicionar">Status:</label>
+                <select id="status-adicionar" required>
+                    <option value="">Selecione um status</option>
+                </select>
+            </div>
+            <!-- Comprovação -->
+            <div class="form-group">
+                <label for="comprovacao-adicionar">Comprovação:</label>
+                <input type="text" id="comprovacao-adicionar" placeholder="Insira o link de comprovação">
+            </div>
+            <!-- Prazo de Vencimento -->
+            <div class="form-group">
+                <label for="prazo-adicionar">Prazo de Vencimento:</label>
+                <input type="text" id="prazo-adicionar" placeholder="Prazo de Vencimento">
+            </div>
+            <!-- Ação de Atendimento -->
+            <div class="form-group">
+                <label for="acao-adicionar">Ação de Atendimento:</label>
+                <input type="text" id="acao-adicionar" placeholder="Ação de Atendimento">
+            </div>
+            <!-- Situação -->
+            <div class="form-group">
+                <label for="situacao-adicionar">Situação:</label>
+                <input type="text" id="situacao-adicionar" placeholder="Situação">
+            </div>
+            <!-- Comprovação Protocolada -->
+            <div class="form-group">
+                <label for="protocolo-adicionar">Comprovação Protocolada:</label>
+                <select id="protocolo-adicionar">
+                    <option value="SIM">SIM</option>
+                    <option value="NÃO">NÃO</option>
+                </select>
+            </div>
+            <!-- Responsável (Terceiros) -->
+            <div class="form-group">
+                <label for="responsavel-terceiros-adicionar">Responsável (Terceiros):</label>
+                <select id="responsavel-terceiros-adicionar" required>
+                    <option value="">Selecione</option>
+                </select>
+            </div>
+            <!-- Responsável (Cliente) -->
+            <div class="form-group">
+                <label for="responsavel-cliente-adicionar">Responsável (Cliente):</label>
+                <select id="responsavel-cliente-adicionar" required>
+                    <option value="">Selecione</option>
+                </select>
+            </div>
+            <!-- Responsável (Zago) -->
+            <div class="form-group">
+                <label for="responsavel-zago-adicionar">Responsável (Zago):</label>
+                <select id="responsavel-zago-adicionar" required>
+                    <option value="">Selecione</option>
+                </select>
+            </div>
+            <!-- Data de Atendimento -->
+            <div class="form-group">
+                <label for="data-atendimento-adicionar">Data de Atendimento:</label>
+                <input type="date" id="data-atendimento-adicionar">
+            </div>
+            <!-- Botão -->
+            <div class="form-actions">
+                <button type="button" class="btn" id="modal-action-button" onclick="adicionarCondicionante()">Adicionar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="modal-editar" class="modal" style="display: none;">
+    <div class="modal-content">
+        <button class="close-button" onclick="fecharModalEditar()">&times;</button>
+        <h2>Editar Condicionante</h2>
+        <form id="form-editar">
+            <!-- Obra -->
+            <div class="form-group">
+                <label for="obra-editar">Obra:</label>
+                <select id="obra-editar"></select>
+            </div>
+            <!-- Descrição -->
+            <div class="form-group">
+                <label for="condicionante-editar">Descrição:</label>
+                <textarea id="condicionante-editar"></textarea>
+            </div>
+            <!-- Identificação -->
+            <div class="form-group">
+                <label for="identificacao-editar">Identificação:</label>
+                <input type="text" id="identificacao-editar" />
+            </div>
+            <!-- Status -->
+            <div class="form-group">
+                <label for="status-editar">Status:</label>
+                <select id="status-editar"></select>
+            </div>
+            <!-- Comprovação -->
+            <div class="form-group">
+                <label for="comprovacao-editar">Comprovação:</label>
+                <input type="text" id="comprovacao-editar" />
+            </div>
+            <!-- Prazo de Vencimento -->
+            <div class="form-group">
+                <label for="prazo-editar">Prazo de Vencimento:</label>
+                <input type="text" id="prazo-editar" />
+            </div>
+            <!-- Ação de Atendimento -->
+            <div class="form-group">
+                <label for="acao-editar">Ação de Atendimento:</label>
+                <input type="text" id="acao-editar" />
+            </div>
+            <!-- Situação -->
+            <div class="form-group">
+                <label for="situacao-editar">Situação:</label>
+                <input type="text" id="situacao-editar" />
+            </div>
+            <!-- Protocolo -->
+            <div class="form-group">
+                <label for="protocolo-editar">Comprovação Protocolada:</label>
+                <select id="protocolo-editar">
+                    <option value="SIM">SIM</option>
+                    <option value="NÃO">NÃO</option>
+                </select>
+            </div>
+            <!-- Responsável (Terceiros) -->
+            <div class="form-group">
+                <label for="responsavel-terceiros-editar">Responsável (Terceiros):</label>
+                <select id="responsavel-terceiros-editar"></select>
+            </div>
+            <!-- Responsável (Cliente) -->
+            <div class="form-group">
+                <label for="responsavel-cliente-editar">Responsável (Cliente):</label>
+                <select id="responsavel-cliente-editar"></select>
+            </div>
+            <!-- Responsável (Zago) -->
+            <div class="form-group">
+                <label for="responsavel-zago-editar">Responsável (Zago):</label>
+                <select id="responsavel-zago-editar"></select>
+            </div>
+            <!-- Data de Atendimento -->
+            <div class="form-group">
+                <label for="data-atendimento-editar">Data de Atendimento:</label>
+                <input type="date" id="data-atendimento-editar" />
+            </div>
+            <!-- Botão -->
+            <div class="form-actions">
+                <button type="button" onclick="salvarCondicionante()">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+<script src="script.js"></script>
+</body>
+</html>

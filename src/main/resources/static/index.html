@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Principal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <h1>Menu Principal</h1>
+</header>
+<div id="main-content-wrapper">
+    <main class="menu-principal">
+        <button class="menu-button" onclick="irPara('registro-ocorrencias.html')">Registro de Ocorrências</button>
+        <button class="menu-button" onclick="irPara('condicionantes.html')">Condicionantes</button>
+    </main>
+</div>
+
+<script>
+    // Função para redirecionar
+    function irPara(pagina) {
+        window.location.href = pagina;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,357 @@
+/* Geral */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+main {
+    flex: 1;
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Menu Principal */
+.menu-principal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    height: 80vh;
+}
+
+.menu-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.menu-button:hover {
+    background-color: #45a049;
+}
+
+.menu-button:focus {
+    outline: none;
+    background-color: #3e8e41;
+}
+
+/* Estilo para Filtros */
+.filtros {
+    display: flex;
+    align-items: center; /* Alinha verticalmente os itens */
+    gap: 10px; /* Espaçamento entre os elementos */
+}
+
+.filtros select,
+.filtros input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Estilo do botão */
+#btn-filtrar {
+    background-color: #4CAF50; /* Cor de fundo */
+    color: white; /* Cor do texto */
+    border: none;
+    padding: 12px 24px; /* Aumenta o tamanho do botão */
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+#btn-filtrar:hover {
+    background-color: #45a049;
+}
+
+#btn-filtrar:focus {
+    outline: none;
+    background-color: #3e8e41;
+}
+
+/* Estilo do círculo de carregamento */
+.spinner {
+    width: 20px; /* Ajustar largura */
+    height: 20px; /* Ajustar altura */
+    border: 3px solid #f3f3f3; /* Cor da borda */
+    border-top: 3px solid #4CAF50; /* Cor do topo */
+    border-radius: 50%; /* Formato circular */
+    animation: spin 0.8s linear infinite;
+}
+
+/* Animação do círculo */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Estilo dos Cards */
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: calc(33% - 20px);
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card p {
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+.card strong {
+    font-weight: bold;
+}
+
+/* Cores de status */
+.card .atrasado {
+    color: red;
+    font-weight: bold;
+}
+
+.card .pendente {
+    color: orange;
+    font-weight: bold;
+}
+
+.card .finalizado {
+    color: green;
+    font-weight: bold;
+}
+
+/* Gravidade */
+.gravidade-desvio {
+    color: gray;
+}
+
+.gravidade-leve {
+    color: yellow;
+}
+
+.gravidade-media {
+    color: orange;
+}
+
+.gravidade-grave {
+    color: red;
+}
+
+/* Responsividade dos Cards */
+@media (max-width: 768px) {
+    .card {
+        width: calc(50% - 20px);
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        width: 100%;
+    }
+}
+
+/* Modal */
+.modal {
+    display: none; /* Escondido por padrão */
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo escurecido */
+    display: flex; /* Flex para centralizar */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Conteúdo da modal */
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 40%; /* Ajuste conforme necessário */
+    max-width: 600px; /* Limite de largura máxima */
+    max-height: 80vh; /* Limite de altura máxima (80% da altura da viewport) */
+    overflow-y: auto; /* Adiciona a barra de rolagem vertical se o conteúdo ultrapassar */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Sombra */
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-actions {
+    text-align: center;
+}
+
+.form-actions .btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-actions .btn:hover {
+    background-color: #45a049;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 18px;
+    color: #555;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    color: black;
+}
+
+.add-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #4CAF50;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add-button:hover {
+    background-color: #45a049;
+}
+
+.add-button .tooltip {
+    display: none;
+    position: absolute;
+    bottom: 60px;
+    background: black;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    text-align: center;
+}
+
+.add-button:hover .tooltip {
+    display: block;
+}
+
+.icon-plus::before {
+    content: "+";
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.save-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.save-button:hover {
+    background-color: #45a049;
+}
+
+/* Animação de aparição */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Fundo da Página em Modal */
+body.modal-open #main-content-wrapper {
+    filter: blur(5px); /* Aplica o desfoque */
+    pointer-events: none; /* Impede interações com o fundo */
+}
