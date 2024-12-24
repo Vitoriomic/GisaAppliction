@@ -188,6 +188,18 @@ async function carregarOpcoesAdicionar() {
     await carregarResponsabilidades("/api/responsabilidades/terceiros", "responsavel-terceiros-adicionar");
     await carregarResponsabilidades("/api/responsabilidades/cliente", "responsavel-cliente-adicionar");
     await carregarResponsabilidades("/api/responsabilidades/zago", "responsavel-zago-adicionar");
+
+    // Carregar protocolações
+    const protocolacoesResponse = await fetch("/api/protocolacoes");
+        const protocolacoes = await protocolacoesResponse.json();
+        const protocolacaoSelect = document.getElementById("protocolo-adicionar");
+        protocolacaoSelect.innerHTML = '<option value="">Selecione uma protocolação</option>';
+        protocolacoes.forEach(protocolacao => {
+            const option = document.createElement("option");
+            option.value = protocolacao.protocolacaoid;
+            option.textContent = protocolacao.status; // Ajustar conforme o campo da entidade Protocolacao
+            protocolacaoSelect.appendChild(option);
+        });
 }
 
 async function carregarResponsabilidades(apiUrl, selectId) {
@@ -213,7 +225,7 @@ async function adicionarCondicionante() {
     const comprovacao = document.getElementById("comprovacao-adicionar").value;
     const prazo = document.getElementById("prazo-adicionar").value;
     const situacao = document.getElementById("situacao-adicionar").value;
-    const protocolo = document.getElementById("protocolo-adicionar").value;
+    const protocolacao = document.getElementById("protocolo-adicionar").value;
     const respTerceiros = document.getElementById("responsavel-terceiros-adicionar").value;
     const respCliente = document.getElementById("responsavel-cliente-adicionar").value;
     const respZago = document.getElementById("responsavel-zago-adicionar").value;
@@ -275,7 +287,6 @@ async function abrirModalEditar() {
         document.getElementById("prazo-editar").value = condicionanteAtual.prazoVencimento || "";
         document.getElementById("situacao-editar").value = condicionanteAtual.situacao || "";
         document.getElementById("acao-editar").value = condicionanteAtual.acaoAtendimento || "";
-        document.getElementById("protocolo-editar").value = condicionanteAtual.protocolacao?.status || "";
         document.getElementById("data-atendimento-editar").value = condicionanteAtual.dataAtendimento || "";
 
         // Carregar selects e selecionar as opções corretas
@@ -284,6 +295,8 @@ async function abrirModalEditar() {
         await carregarSelectComValor("/api/responsabilidades/terceiros", "responsavel-terceiros-editar", condicionanteAtual.responsabilidadeTerceiros?.respterceirosid);
         await carregarSelectComValor("/api/responsabilidades/cliente", "responsavel-cliente-editar", condicionanteAtual.responsabilidadeCliente?.respclienteid);
         await carregarSelectComValor("/api/responsabilidades/zago", "responsavel-zago-editar", condicionanteAtual.responsabilidadeZago?.respzagoid);
+        await carregarSelectComValor("/api/protocolacoes", "protocolo-editar", condicionanteAtual.protocolacao?.protocolacaoId);
+
 
         console.log("Modal de edição pronta para exibir.");
 
@@ -323,8 +336,8 @@ async function carregarSelectComValor(apiUrl, selectId, valorAtual) {
         // Adicionar opções ao select
         dados.forEach(dado => {
             const option = document.createElement("option");
-            option.value = dado.obraid || dado.statusId || dado.respterceirosid || dado.respclienteid || dado.respzagoid; // Ajuste conforme a API
-            option.textContent = dado.nome || dado.status || dado.responsabilidade; // Ajuste conforme a API
+            option.value = dado.obraid || dado.statusId || dado.respterceirosid || dado.respclienteid || dado.respzagoid || dado.protocolacaoId; // Ajuste conforme a API
+            option.textContent = dado.nome || dado.status || dado.responsabilidade || dado.status; // Ajuste conforme a API
             if (option.value == valorAtual) {
                 option.selected = true; // Selecionar o valor atual
             }
@@ -354,7 +367,7 @@ async function salvarCondicionante() {
         comprovacao: document.getElementById("comprovacao-editar").value,
         prazoVencimento: document.getElementById("prazo-editar").value,
         situacao: document.getElementById("situacao-editar").value,
-        protocolo: document.getElementById("protocolo-editar").value,
+        protocolacao: document.getElementById("protocolo-editar").value,
         respTerceirosId: document.getElementById("responsavel-terceiros-editar").value,
         respClienteId: document.getElementById("responsavel-cliente-editar").value,
         respZagoId: document.getElementById("responsavel-zago-editar").value,
