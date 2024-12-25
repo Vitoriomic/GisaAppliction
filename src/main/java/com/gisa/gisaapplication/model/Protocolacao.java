@@ -13,6 +13,14 @@ public class Protocolacao {
     @Column(nullable = false)
     private String status;
 
+    // Construtor padrão (necessário para o JPA)
+    public Protocolacao() {}
+
+    // Construtor que aceita um Integer para deserialização
+    public Protocolacao(Integer protocolacaoId) {
+        this.protocolacaoId = protocolacaoId;
+    }
+
     // Getters e Setters
     public Integer getProtocolacaoId() {
         return protocolacaoId;

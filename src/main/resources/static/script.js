@@ -179,15 +179,10 @@ async function carregarOpcoesAdicionar() {
     statusSelect.innerHTML = '<option value="">Selecione um status</option>';
     statusList.forEach(status => {
         const option = document.createElement("option");
-        option.value = status.statusid;
+        option.value = status.statusId;
         option.textContent = status.status;
         statusSelect.appendChild(option);
     });
-
-    // Carregar responsabilidades
-    await carregarResponsabilidades("/api/responsabilidades/terceiros", "responsavel-terceiros-adicionar");
-    await carregarResponsabilidades("/api/responsabilidades/cliente", "responsavel-cliente-adicionar");
-    await carregarResponsabilidades("/api/responsabilidades/zago", "responsavel-zago-adicionar");
 
     // Carregar protocolações
     const protocolacoesResponse = await fetch("/api/protocolacoes");
@@ -196,10 +191,48 @@ async function carregarOpcoesAdicionar() {
         protocolacaoSelect.innerHTML = '<option value="">Selecione uma protocolação</option>';
         protocolacoes.forEach(protocolacao => {
             const option = document.createElement("option");
-            option.value = protocolacao.protocolacaoid;
+            option.value = protocolacao.protocolacaoId;
             option.textContent = protocolacao.status; // Ajustar conforme o campo da entidade Protocolacao
             protocolacaoSelect.appendChild(option);
         });
+
+    // Carregar Responsabilidade de Terceiros
+    const respTerceirosResponse = await fetch("/api/responsabilidades/terceiros");
+            const respTerceiros = await respTerceirosResponse.json();
+            const  respTerceirosSelect = document.getElementById("responsavel-terceiros-adicionar");
+            respTerceirosSelect.innerHTML = '<option value="">Selecione uma responsbilidade</option>';
+            respTerceiros.forEach(respTerceiros => {
+                const option = document.createElement("option");
+                option.value = respTerceiros.respterceirosid;
+                option.textContent = respTerceiros.responsabilidade; // Ajustar conforme o campo da entidade Protocolacao
+                respTerceirosSelect.appendChild(option);
+            });
+
+    // Carregar Responsabilidade do Cliente
+    const respClienteResponse = await fetch("/api/responsabilidades/cliente");
+            const respCliente = await respClienteResponse.json();
+            const  respClienteSelect = document.getElementById("responsavel-cliente-adicionar");
+            respClienteSelect.innerHTML = '<option value="">Selecione uma responsbilidade</option>';
+            respCliente.forEach(respCliente => {
+                const option = document.createElement("option");
+                option.value = respCliente.respclienteid;
+                option.textContent = respCliente.responsabilidade; // Ajustar conforme o campo da entidade Protocolacao
+                respClienteSelect.appendChild(option);
+            });
+
+    // Carregar Responsabilidade da Zago
+    const respZagoResponse = await fetch("/api/responsabilidades/zago");
+            const respZago = await respZagoResponse.json();
+            const  respZagoSelect = document.getElementById("responsavel-zago-adicionar");
+            respZagoSelect.innerHTML = '<option value="">Selecione uma responsbilidade</option>';
+            respZago.forEach(respZago => {
+                const option = document.createElement("option");
+                option.value = respZago.respzagoid;
+                option.textContent = respZago.responsabilidade; // Ajustar conforme o campo da entidade Protocolacao
+                respZagoSelect.appendChild(option);
+            });
+
+
 }
 
 async function carregarResponsabilidades(apiUrl, selectId) {
@@ -218,28 +251,31 @@ async function carregarResponsabilidades(apiUrl, selectId) {
 
 // Adicionar condicionante
 async function adicionarCondicionante() {
-    const obraId = document.getElementById("obra-adicionar").value;
-    const statusId = document.getElementById("status-adicionar").value;
+
+    const obraId = Number(document.getElementById("obra-adicionar").value);
+    const statusId = Number(document.getElementById("status-adicionar").value);
     const identificacao = document.getElementById("identificacao-adicionar").value;
     const descricao = document.getElementById("condicionante-adicionar").value;
     const comprovacao = document.getElementById("comprovacao-adicionar").value;
     const prazo = document.getElementById("prazo-adicionar").value;
+    const acaoAtendimento = document.getElementById("acao-adicionar").value;
     const situacao = document.getElementById("situacao-adicionar").value;
-    const protocolacao = document.getElementById("protocolo-adicionar").value;
-    const respTerceiros = document.getElementById("responsavel-terceiros-adicionar").value;
-    const respCliente = document.getElementById("responsavel-cliente-adicionar").value;
-    const respZago = document.getElementById("responsavel-zago-adicionar").value;
+    const protocolacao = Number(document.getElementById("protocolo-adicionar").value);
+    const respTerceiros = Number(document.getElementById("responsavel-terceiros-adicionar").value);
+    const respCliente = Number(document.getElementById("responsavel-cliente-adicionar").value);
+    const respZago = Number(document.getElementById("responsavel-zago-adicionar").value);
     const dataAtendimento = document.getElementById("data-atendimento-adicionar").value;
 
     const data = {
         obraId,
-        statusId,
-        identificacao,
         descricao,
+        identificacao,
+        statusId,
         comprovacao,
         prazoVencimento: prazo,
+        acaoAtendimento,
         situacao,
-        protocolo,
+        protocolacao,
         respTerceirosId: respTerceiros,
         respClienteId: respCliente,
         respZagoId: respZago,
@@ -394,33 +430,10 @@ async function salvarCondicionante() {
     }
 }
 
-
-// Capturar dados do formulário
-function capturarDadosFormulario() {
-    return {
-        obra: { obraid: document.getElementById("obra-adicionar").value },
-        condicionante: document.getElementById("condicionante-adicionar").value,
-        identificacao: document.getElementById("identificacao-adicionar").value,
-        statusCondicionante: { statusid: document.getElementById("status-adicionar").value },
-        comprovacao: document.getElementById("comprovacao-adicionar").value,
-        prazovencimento: document.getElementById("prazo-adicionar").value,
-        acaoatendimento: document.getElementById("acao-adicionar").value,
-        situacao: document.getElementById("situacao-adicionar").value,
-        protocolacao: document.getElementById("protocolo-adicionar").value,
-        respTerceiros: { respterceirosid: document.getElementById("responsavel-terceiros-adicionar").value },
-        respCliente: { respclienteid: document.getElementById("responsavel-cliente-adicionar").value },
-        respZago: { respzagoid: document.getElementById("responsavel-zago-adicionar").value },
-        dataatendimento: document.getElementById("data-atendimento-adicionar").value,
-    };
-}
-
 // Fechar modal
 function fecharModalAdicionar() {
     document.getElementById("modal-adicionar").style.display = "none";
 }
-
-
-
 
 // Inicializar a página
 document.addEventListener("DOMContentLoaded", () => {

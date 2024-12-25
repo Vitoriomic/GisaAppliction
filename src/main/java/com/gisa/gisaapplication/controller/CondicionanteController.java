@@ -36,6 +36,16 @@ public class CondicionanteController {
             return ResponseEntity.notFound().build();
         }
     }
+    @PostMapping
+    public ResponseEntity<Condicionante> criarCondicionante(@RequestBody Condicionante condicionante) {
+        try {
+            Condicionante condicionanteSalva = condicionanteService.salvar(condicionante);
+            return ResponseEntity.status(HttpStatus.CREATED).body(condicionanteSalva);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizarCondicionante(@PathVariable int id, @RequestBody Condicionante condicionanteAtualizada) {

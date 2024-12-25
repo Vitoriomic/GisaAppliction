@@ -38,6 +38,8 @@ public class CondicionanteService {
         return condicionanteRepository.findAll();
     }
 
-    public void salvar(Condicionante condicionanteExistente) {
+    public Condicionante salvar(Condicionante condicionante) {
+        condicionante.setCondicionanteId(null);
+        return condicionanteRepository.save(condicionante);
     }
 }
