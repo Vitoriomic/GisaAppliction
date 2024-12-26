@@ -17,4 +17,8 @@ public class RespTerceirosService {
     public List<RespTerceiros> listarTodos() {
         return repository.findAll();
     }
+    public RespTerceiros buscarPorId(Integer id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("RespTerceiros não encontrado com ID: " + id));
+    }
 }

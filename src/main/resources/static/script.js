@@ -252,35 +252,35 @@ async function carregarResponsabilidades(apiUrl, selectId) {
 // Adicionar condicionante
 async function adicionarCondicionante() {
 
-    const obraId = Number(document.getElementById("obra-adicionar").value);
-    const statusId = Number(document.getElementById("status-adicionar").value);
-    const identificacao = document.getElementById("identificacao-adicionar").value;
-    const descricao = document.getElementById("condicionante-adicionar").value;
-    const comprovacao = document.getElementById("comprovacao-adicionar").value;
-    const prazo = document.getElementById("prazo-adicionar").value;
-    const acaoAtendimento = document.getElementById("acao-adicionar").value;
-    const situacao = document.getElementById("situacao-adicionar").value;
-    const protocolacao = Number(document.getElementById("protocolo-adicionar").value);
-    const respTerceiros = Number(document.getElementById("responsavel-terceiros-adicionar").value);
-    const respCliente = Number(document.getElementById("responsavel-cliente-adicionar").value);
-    const respZago = Number(document.getElementById("responsavel-zago-adicionar").value);
-    const dataAtendimento = document.getElementById("data-atendimento-adicionar").value;
+const obraId = document.getElementById("obra-adicionar").value || null;
+    const statusId = document.getElementById("status-adicionar").value || null;
+    const identificacao = document.getElementById("identificacao-adicionar").value || null;
+    const condicionante = document.getElementById("condicionante-adicionar").value || null;
+    const comprovacao = document.getElementById("comprovacao-adicionar").value || null;
+    const prazo = document.getElementById("prazo-adicionar").value || null;
+    const acaoAtendimento = document.getElementById("acao-adicionar").value || null;
+    const situacao = document.getElementById("situacao-adicionar").value || null;
+    const protocolacaoId = document.getElementById("protocolo-adicionar").value || null;
+    const respTerceiros = document.getElementById("responsavel-terceiros-adicionar").value || null;
+    const respCliente = document.getElementById("responsavel-cliente-adicionar").value || null;
+    const respZago = document.getElementById("responsavel-zago-adicionar").value || null;
+    const dataAtendimento = document.getElementById("data-atendimento-adicionar").value || null;
 
-    const data = {
-        obraId,
-        descricao,
-        identificacao,
-        statusId,
-        comprovacao,
-        prazoVencimento: prazo,
-        acaoAtendimento,
-        situacao,
-        protocolacao,
-        respTerceirosId: respTerceiros,
-        respClienteId: respCliente,
-        respZagoId: respZago,
-        dataAtendimento,
-    };
+const data = {
+    obraId: obraId ? Number(obraId) : null,
+    condicionante: condicionante || null,
+    identificacao: identificacao || null,
+    statusId: statusId ? Number(statusId) : null,
+    comprovacao: comprovacao || null,
+    prazoVencimento: prazo || null,
+    acaoAtendimento: acaoAtendimento || null,
+    situacao: situacao || null,
+    protocolacaoId: protocolacaoId ? Number(protocolacaoId) : null,
+    respTerceirosId: respTerceiros ? Number(respTerceiros) : null,
+    respClienteId: respCliente ? Number(respCliente) : null,
+    respZagoId: respZago ? Number(respZago) : null,
+    dataAtendimento: dataAtendimento || null,
+};
 
     try {
         const response = await fetch("/api/condicionantes", {
@@ -291,7 +291,7 @@ async function adicionarCondicionante() {
 
         if (response.ok) {
             const result = await response.json();
-            alert(`Condicionante adicionada com sucesso! ID: ${result.id}`);
+            alert(`Condicionante adicionada com sucesso! ID: ${result.condicionanteId}`);
             fecharModalAdicionar();
         } else {
             const error = await response.text();
@@ -395,23 +395,23 @@ function fecharModalEditar() {
 
 // Salvar alterações na condicionante
 async function salvarCondicionante() {
-    const condicionanteAtualizada = {
-        obraId: document.getElementById("obra-editar").value,
-        identificacao: document.getElementById("identificacao-editar").value,
-        condicionante: document.getElementById("condicionante-editar").value,
-        statusId: document.getElementById("status-editar").value,
-        comprovacao: document.getElementById("comprovacao-editar").value,
-        prazoVencimento: document.getElementById("prazo-editar").value,
-        situacao: document.getElementById("situacao-editar").value,
-        protocolacao: document.getElementById("protocolo-editar").value,
-        respTerceirosId: document.getElementById("responsavel-terceiros-editar").value,
-        respClienteId: document.getElementById("responsavel-cliente-editar").value,
-        respZagoId: document.getElementById("responsavel-zago-editar").value,
-        dataAtendimento: document.getElementById("data-atendimento-editar").value,
-    };
+     const condicionanteAtualizada = {
+            obraId: document.getElementById("obra-editar").value || null,
+            identificacao: document.getElementById("identificacao-editar").value || null,
+            condicionante: document.getElementById("condicionante-editar").value || null,
+            statusId: document.getElementById("status-editar").value || null,
+            comprovacao: document.getElementById("comprovacao-editar").value || null,
+            prazoVencimento: document.getElementById("prazo-editar").value || null,
+            situacao: document.getElementById("situacao-editar").value || null,
+            protocolacaoId: document.getElementById("protocolo-editar").value || null,
+            respTerceirosId: document.getElementById("responsavel-terceiros-editar").value || null,
+            respClienteId: document.getElementById("responsavel-cliente-editar").value || null,
+            respZagoId: document.getElementById("responsavel-zago-editar").value || null,
+            dataAtendimento: document.getElementById("data-atendimento-editar").value || null,
+        };
 
     try {
-        const response = await fetch(`/api/condicionantes/${currentCondicionanteId}`, {
+        const response = await fetch(`/api/condicionantes/${condicionanteAtual.condicionanteId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(condicionanteAtualizada),
@@ -434,6 +434,30 @@ async function salvarCondicionante() {
 function fecharModalAdicionar() {
     document.getElementById("modal-adicionar").style.display = "none";
 }
+
+async function excluirCondicionante(id) {
+    if (!confirm("Tem certeza de que deseja excluir esta condicionante?")) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/condicionantes/${id}`, {
+            method: "DELETE",
+        });
+
+        if (response.ok) {
+            alert("Condicionante excluída com sucesso!");
+            carregarCondicionantes(); // Atualiza a lista de condicionantes
+        } else {
+            const errorText = await response.text();
+            alert(`Erro ao excluir: ${errorText}`);
+        }
+    } catch (err) {
+        console.error("Erro ao excluir a condicionante:", err);
+        alert(`Erro ao excluir a condicionante: ${err.message}`);
+    }
+}
+
 
 // Inicializar a página
 document.addEventListener("DOMContentLoaded", () => {

@@ -17,4 +17,8 @@ public class RespClienteService {
     public List<RespCliente> listarTodos() {
         return repository.findAll();
     }
+    public RespCliente buscarPorId(Integer id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("RespCliente não encontrado com ID: " + id));
+    }
 }

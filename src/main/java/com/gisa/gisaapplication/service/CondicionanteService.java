@@ -38,8 +38,17 @@ public class CondicionanteService {
         return condicionanteRepository.findAll();
     }
 
-    public Condicionante salvar(Condicionante condicionante) {
-        condicionante.setCondicionanteId(null);
-        return condicionanteRepository.save(condicionante);
+    public void salvarCondicionante(Condicionante condicionante) {
+        // Validações adicionais, se necessário
+        if (condicionante.getObra() == null || condicionante.getCondicionante() == null) {
+            throw new IllegalArgumentException("Campos obrigatórios não preenchidos.");
+        }
+        // Salvar no banco
+        condicionanteRepository.save(condicionante);
+    }
+    // Excluir condicionante por ID
+    public void excluirCondicionante(int id) {
+        Condicionante condicionante = buscarPorId(id); // Verifica se a condicionante existe
+        condicionanteRepository.delete(condicionante);
     }
 }
