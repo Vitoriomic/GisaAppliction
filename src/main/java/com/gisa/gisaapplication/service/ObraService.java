@@ -25,4 +25,30 @@ public class ObraService {
         return obraRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Obra não encontrada com ID: " + id));
     }
+
+    // Salvar ou atualizar obra
+    public void salvarObra(Obra obra) {
+        obraRepository.save(obra);
+    }
+
+    // Excluir obra por ID
+    public void excluirObra(Integer id) {
+        Obra obra = buscarPorId(id);
+        obraRepository.delete(obra);
+    }
+
+    // Buscar obras por nome
+    public List<Obra> buscarPorNome(String nome) {
+        return obraRepository.findByNomeContainingIgnoreCase(nome);
+    }
+
+    // Buscar obras por status
+    public List<Obra> buscarPorStatus(String status) {
+        return obraRepository.findByStatus(status);
+    }
+
+    // Buscar obras por localidade
+    public List<Obra> buscarPorLocalidade(String localidade) {
+        return obraRepository.findByLocalidade(localidade);
+    }
 }

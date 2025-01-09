@@ -1,5 +1,6 @@
 package com.gisa.gisaapplication.repository;
 
+import com.gisa.gisaapplication.model.Ocorrencia;
 import com.gisa.gisaapplication.model.Obra;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,5 +17,8 @@ public interface ObraRepository extends JpaRepository<Obra, Integer> {
     @Query("SELECT o FROM Obra o WHERE o.statusObra.status = :status")
     List<Obra> findByStatus(@Param("status") String status);
 
-    // Não é necessário declarar o modo findById aqui!
+    // Buscar por localidade
+    @Query("SELECT o FROM Obra o WHERE o.localidade LIKE %:localidade%")
+    List<Obra> findByLocalidade(@Param("localidade") String localidade);
 }
+

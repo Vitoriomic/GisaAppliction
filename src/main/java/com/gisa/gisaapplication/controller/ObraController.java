@@ -19,8 +19,8 @@ public class ObraController {
 
     // Endpoint para listar todas as obras
     @GetMapping
-    public List<Obra> listarTodas() {
-        return obraService.listarTodas();
+    public ResponseEntity<List<Obra>> listarTodas() {
+        return ResponseEntity.ok(obraService.listarTodas());
     }
 
     // Endpoint para buscar uma obra por ID
@@ -32,5 +32,19 @@ public class ObraController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    // Endpoint para salvar uma nova obra
+    @PostMapping
+    public ResponseEntity<Obra> salvarObra(@RequestBody Obra obra) {
+        obraService.salvarObra(obra);
+        return ResponseEntity.ok(obra);
+    }
+
+    // Endpoint para excluir uma obra por ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirObra(@PathVariable Integer id) {
+        obraService.excluirObra(id);
+        return ResponseEntity.noContent().build();
     }
 }
