@@ -244,3 +244,33 @@ body.modal-open #main-content-wrapper {
     filter: blur(5px);
     pointer-events: none;
 }
+
+/* Estilo para o status */
+.status {
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+/* Cores dos status */
+.status-recebida {
+    color: white;
+    background-color: gray;
+}
+
+.status-em-tratamento {
+    color: black;
+    background-color: yellow;
+}
+
+.status-finalizada {
+    color: white;
+    background-color: green;
+}
+
+/* Classe para status desconhecidos */
+.status-default {
+    color: black;
+    background-color: lightgray;
+}

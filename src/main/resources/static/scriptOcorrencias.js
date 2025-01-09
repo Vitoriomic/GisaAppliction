@@ -105,12 +105,29 @@ function exibirOcorrencias(ocorrencias) {
         ocorrencias.forEach(ocorrencia => {
             const card = document.createElement("div");
             card.className = "card";
+
+            // Definir a classe de cor do status com base na descrição
+            let statusClass = "";
+            switch (ocorrencia.statusOcorrencia.descricao) {
+                case "Recebida":
+                    statusClass = "status-recebida";
+                    break;
+                case "Em tratamento":
+                    statusClass = "status-em-tratamento";
+                    break;
+                case "Finalizada":
+                    statusClass = "status-finalizada";
+                    break;
+                default:
+                    statusClass = "status-default";
+            }
+
             card.innerHTML = `
                 <p><strong>ID:</strong> ${ocorrencia.ocorrenciaId}</p>
                 <p><strong>Local:</strong> ${ocorrencia.obra.nome}</p>
                 <p><strong>Grupo:</strong> ${ocorrencia.grupoOcorrencia.grupoOcorrencia}</p>
                 <p><strong>Data:</strong> ${ocorrencia.dataRegistro}</p>
-                <p><strong>Status:</strong> ${ocorrencia.statusOcorrencia.descricao}</p>
+                <p><strong>Status:</strong> <span class="status ${statusClass}">${ocorrencia.statusOcorrencia.descricao}</span></p>
             `;
             card.addEventListener("click", () => abrirModal(ocorrencia));
             container.appendChild(card);

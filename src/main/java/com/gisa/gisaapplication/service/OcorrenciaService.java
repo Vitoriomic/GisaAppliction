@@ -4,6 +4,8 @@ import com.gisa.gisaapplication.model.Ocorrencia;
 import com.gisa.gisaapplication.repository.OcorrenciaRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
