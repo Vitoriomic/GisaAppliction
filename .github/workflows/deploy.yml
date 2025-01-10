@@ -10,15 +10,20 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Stop Java Process
+      - name: Force Clean Target Directory
         run: |
-          $ErrorActionPreference = "Continue"
-          try {
-          taskkill /F /IM java.exe
-          Write-Output "Processo Java finalizado com sucesso."
-          } catch {
-          Write-Output "Nenhum processo Java estava rodando."
+          Function Unlock-Folder {
+          param ([string]$folderPath)
+          $folder = Get-Item -Path $folderPath
+          $folder.Attributes = 'Normal'
+          Get-ChildItem -Path $folderPath -Recurse | ForEach-Object {
+          $_.Attributes = 'Normal'
           }
+          Remove-Item -Path $folderPath -Recurse -Force
+          }
+          Unlock-Folder -folderPath "C:\actions-runner\GISA_work\GisaAppliction\GisaAppliction\target"
+          Write-Output "Diretório target removido com sucesso."
+          
         shell: powershell
 
       - name: Checkout Code
