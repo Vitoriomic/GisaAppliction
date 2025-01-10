@@ -106,7 +106,7 @@ function exibirOcorrencias(ocorrencias) {
             const card = document.createElement("div");
             card.className = "card";
 
-            // Definir a classe de cor do status com base na descrição
+            // Determinar a classe para o status
             let statusClass = "";
             switch (ocorrencia.statusOcorrencia.descricao) {
                 case "Recebida":
@@ -122,18 +122,63 @@ function exibirOcorrencias(ocorrencias) {
                     statusClass = "status-default";
             }
 
+            // Determinar prazo com base no tratamento
+            let prazoClass = "";
+            let prazo = "";
+            if (ocorrencia.statusOcorrencia.descricao !== "Finalizada") {
+                prazo = ocorrencia.tratamentoOcorrencia || "Sem prazo definido";
+
+                if (ocorrencia.tratamentoOcorrencia) {
+                    if (ocorrencia.tratamentoOcorrencia.includes("Vencido")) {
+                        prazoClass = "prazo-vencido";
+                    } else if (ocorrencia.tratamentoOcorrencia.includes("Vence hoje")) {
+                        prazoClass = "prazo-vence-hoje";
+                    } else if (/(\d+) dias restantes/.test(prazo)) {
+                        const diasRestantes = parseInt(prazo.match(/(\d+)/)[1]);
+                        if (diasRestantes <= 7) {
+                            prazoClass = "prazo-aviso";
+                        } else {
+                            prazoClass = "prazo-normal";
+                        }
+                    }
+                }
+            }
+
+            // Determinar data exibida
+            let dataExibida = "";
+            if (ocorrencia.statusOcorrencia.descricao === "Finalizada") {
+                dataExibida = ocorrencia.dataResolucao
+                    ? `Resolvido em: ${ocorrencia.dataResolucao}`
+                    : "Data de resolução não definida";
+            } else {
+                dataExibida = ocorrencia.dataAcordada
+                    ? `Data Acordada: ${ocorrencia.dataAcordada}`
+                    : "Data Acordada não definida";
+            }
+
+            // Adicionar gravidade da ocorrência
+            const gravidade = ocorrencia.gravidade
+                ? ocorrencia.gravidade.gravidade
+                : "Gravidade não definida";
+
             card.innerHTML = `
                 <p><strong>ID:</strong> ${ocorrencia.ocorrenciaId}</p>
                 <p><strong>Local:</strong> ${ocorrencia.obra.nome}</p>
                 <p><strong>Grupo:</strong> ${ocorrencia.grupoOcorrencia.grupoOcorrencia}</p>
+                <p><strong>Gravidade:</strong> ${gravidade}</p>
                 <p><strong>Data:</strong> ${ocorrencia.dataRegistro}</p>
                 <p><strong>Status:</strong> <span class="status ${statusClass}">${ocorrencia.statusOcorrencia.descricao}</span></p>
+                <p><strong>${dataExibida}</strong></p>
+                ${prazo && ocorrencia.statusOcorrencia.descricao !== "Finalizada" ? `<p class="prazo ${prazoClass}">${prazo}</p>` : ""}
             `;
             card.addEventListener("click", () => abrirModal(ocorrencia));
             container.appendChild(card);
         });
     }
 }
+
+
+
 
 // Função para abrir modal de detalhes
 function abrirModal(ocorrencia) {

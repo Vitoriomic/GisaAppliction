@@ -72,14 +72,18 @@ main {
 
 .card {
     background-color: white;
-    border: 1px solid #ddd;
+    border: 2px solid transparent; /* Borda padrão transparente */
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 20px;
     width: calc(33% - 20px);
     box-sizing: border-box;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.3s ease;
+}
+/* Borda verde para cards finalizados */
+.status-finalizada-border {
+    border-color: green;
 }
 
 .card:hover {
@@ -245,7 +249,7 @@ body.modal-open #main-content-wrapper {
     pointer-events: none;
 }
 
-/* Estilo para o status */
+/* Estilo para status */
 .status {
     font-weight: bold;
     padding: 3px 8px;
@@ -253,24 +257,57 @@ body.modal-open #main-content-wrapper {
     display: inline-block;
 }
 
-/* Cores dos status */
+/* Cores para status */
 .status-recebida {
-    color: white;
-    background-color: gray;
+    color: gray;
 }
 
 .status-em-tratamento {
-    color: black;
-    background-color: yellow;
+    color: orange;
 }
 
 .status-finalizada {
     color: white;
     background-color: green;
+    padding: 3px 8px;
+    border-radius: 5px;
 }
 
-/* Classe para status desconhecidos */
-.status-default {
+/* Outros estilos mantidos para prazos */
+.prazo {
+    font-size: 0.9em;
+    font-style: italic;
+    margin-top: 8px;
+}
+
+/* Prazos vencidos */
+.prazo-vencido {
+    color: white;
+    background-color: red;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* Prazos que vencem hoje */
+.prazo-vence-hoje {
+    color: white;
+    background-color: orange;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* Prazos com 7 dias ou menos */
+.prazo-aviso {
     color: black;
-    background-color: lightgray;
+    background-color: orange;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* Prazos normais */
+.prazo-normal {
+    color: black;
+    background-color: lightgreen;
+    padding: 2px 6px;
+    border-radius: 4px;
 }
