@@ -10,6 +10,15 @@ jobs:
     runs-on: self-hosted
 
     steps:
+    
+      - name: Stop All Processes in Target
+        run: |
+          Stop-Process -Name "java" -Force -ErrorAction SilentlyContinue
+          Write-Output "Todos os processos relacionados ao Java foram encerrados."
+        
+        shell: powershell
+
+      
       - name: Force Clean Target Directory
         run: |
           Function Unlock-Folder {
