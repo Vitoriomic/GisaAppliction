@@ -254,7 +254,7 @@ function abrirModal(ocorrencia) {
         tratamentoElement.textContent = ocorrencia.tratamentoOcorrencia || "Sem prazo definido";
     }
 
-
+  //teste
 
     // Status com estilo do card
     const statusElement = document.getElementById("modal-ocorrencia-status");
