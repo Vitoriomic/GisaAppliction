@@ -31,16 +31,11 @@ jobs:
 
           Remove-Item -Path "C:\actions-runner\GisaAppliction\GisaAppliction\target" -Recurse -Force
           Write-Output "Diretório target removido com sucesso."
-        
+
+          exit 0
+          
         shell: powershell
   
-      - name: Stop All Processes in Target
-        run: |
-          Stop-Process -Name "java.exe" -Force -ErrorAction SilentlyContinue
-          Write-Output "Todos os processos relacionados ao Java foram encerrados."
-        
-        shell: powershell
-
       - name: Checkout Code
         uses: actions/checkout@v3
 
