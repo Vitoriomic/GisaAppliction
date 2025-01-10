@@ -23,7 +23,7 @@ jobs:
           $filePath = "C:\actions-runner\GISA_work\GisaAppliction\GisaAppliction\target\gisaapplication-0.0.1-SNAPSHOT.jar"
           $handleTool = "C:\Sysinternals\handle.exe"
           $handleOutput = & $handleTool $filePath
-          $processIds = ($handleOutput -match 'PID: (\d+)' | ForEach-Object { ($_ -match 'PID: (\d+)') -and $Matches[1] }).Trim()
+          $processIds = $handleOutput | Select-String -Pattern 'PID: (\d+)' | ForEach-Object { ($_ -match 'PID: (\d+)') | Out-Null; $Matches[1] }
           foreach ($processId in $processIds) {
           Write-Output "Encerrando processo com PID: $processId"
           Stop-Process -Id [int]$processId -Force -ErrorAction SilentlyContinue
@@ -31,6 +31,7 @@ jobs:
           Remove-Item -Path "C:\actions-runner\GisaAppliction\GisaAppliction\target" -Recurse -Force
           Write-Output "Arquivo e diretório removidos com sucesso."
         shell: powershell
+
 
 
       - name: Checkout Code
