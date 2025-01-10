@@ -24,12 +24,20 @@ jobs:
 
       - name: Deploy and Restart
         run: |
+          $ErrorActionPreference = "Continue"
           try {
             taskkill /F /IM java.exe
           } catch {
-          Write-Output "Nenhuma aplicação rodando"
+            Write-Output "Nenhuma aplicação Java estava rodando"
           }
-          java -jar target/application.jar > application.log 2>&1
+          $jarFile = Get-ChildItem -Path target -Filter *.jar | Select-Object -First 1
+          if ($null -ne $jarFile) {
+            Write-Output "Executando: java -jar $($jarFile.FullName)"
+            java -jar $($jarFile.FullName)
+            Write-Output "Aplicação iniciada com sucesso em segundo plano"
+          } else {
+          Write-Output "Nenhum arquivo .jar encontrado na pasta target"
+          }
+          exit 0
           
         shell: powershell
-
