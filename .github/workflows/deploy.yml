@@ -27,13 +27,9 @@ jobs:
           try {
             taskkill /F /IM java.exe
           } catch {
-            Write-Output "Nenhuma aplicação rodando"
+          Write-Output "Nenhuma aplicação rodando"
           }
-          $jarFile = Get-ChildItem -Path target -Filter *.jar | Select-Object -First 1
-          if ($null -ne $jarFile) {
-            Start-Process -FilePath "java" -ArgumentList "-jar $($jarFile.FullName)" -RedirectStandardOutput "application.log" -RedirectStandardError "application.log" -NoNewWindow 
-            Write-Output "Aplicação iniciada com sucesso"
-            } else {
-            Write-Output "Nenhum arquivo .jar encontrado na pasta target"
-          }
+          java -jar target/application.jar > application.log 2>&1
+          
         shell: powershell
+
