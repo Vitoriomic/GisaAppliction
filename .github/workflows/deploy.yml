@@ -10,6 +10,17 @@ jobs:
     runs-on: self-hosted
 
     steps:
+      - name: Stop Java Process
+        run: |
+          $ErrorActionPreference = "Continue"
+          try {
+          taskkill /F /IM java.exe
+          Write-Output "Processo Java finalizado com sucesso."
+          } catch {
+          Write-Output "Nenhum processo Java estava rodando."
+          }
+        shell: powershell
+
       - name: Checkout Code
         uses: actions/checkout@v3
 
