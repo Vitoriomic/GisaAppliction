@@ -17,6 +17,23 @@ jobs:
           Write-Output "Todos os processos relacionados ao Java foram encerrados."
         
         shell: powershell
+        
+      - name: Force Unlock Target Directory
+        run: |
+          Function Unlock-Folder {
+          param ([string]$folderPath)
+          $folder = Get-Item -Path $folderPath
+          $folder.Attributes = 'Normal'
+          Get-ChildItem -Path $folderPath -Recurse | ForEach-Object {
+            $_.Attributes = 'Normal'
+            Stop-Process -Id (Get-Process -FilePath $_.FullName).Id -Force -ErrorAction SilentlyContinue
+          }
+          Remove-Item -Path $folderPath -Recurse -Force
+          }
+          Unlock-Folder -folderPath "C:\actions-runner\GISA_work\GisaAppliction\GisaAppliction\target"
+          Write-Output "Diretório target removido com sucesso."
+          
+        shell: powershell
 
       
       - name: Force Clean Target Directory
