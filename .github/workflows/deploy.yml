@@ -13,7 +13,7 @@ jobs:
     
       - name: Stop All Processes in Target
         run: |
-          Stop-Process -Name "java" -Force -ErrorAction SilentlyContinue
+          Stop-Process -Name "java.exe" -Force -ErrorAction SilentlyContinue
           Write-Output "Todos os processos relacionados ao Java foram encerrados."
         
         shell: powershell
