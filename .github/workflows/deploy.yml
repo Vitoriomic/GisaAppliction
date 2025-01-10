@@ -24,6 +24,7 @@ jobs:
 
       - name: Deploy and Restart
         run: |
+          $ErrorActionPreference = "Continue"
           try {
             taskkill /F /IM java.exe
           } catch {
