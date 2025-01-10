@@ -1,0 +1,39 @@
+name: Deploy Spring Boot Application
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted 
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build Project
+        run: mvn clean package -DskipTests
+
+      - name: Deploy and Restart
+        run: |
+          try {
+            taskkill /F /IM java.exe
+          } catch {
+            Write-Output "Nenhuma aplicação rodando"
+          }
+          $jarFile = Get-ChildItem -Path target -Filter *.jar | Select-Object -First 1
+          if ($null -ne $jarFile) {
+            Start-Process -FilePath "java" -ArgumentList "-jar $($jarFile.FullName)" -RedirectStandardOutput "application.log" -RedirectStandardError "application.log" -NoNewWindow 
+            Write-Output "Aplicação iniciada com sucesso"
+            } else {
+            Write-Output "Nenhum arquivo .jar encontrado na pasta target"
+          }
+        shell: powershell
