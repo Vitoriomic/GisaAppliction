@@ -24,5 +24,15 @@ jobs:
 
       - name: Deploy and Restart
         run: |
-          taskkill /F /IM java.exe || echo "Nenhuma aplicação rodando"
-          java -jar $(ls target/*.jar | head -n 1) > application.log 2>&1
+          try {
+            taskkill /F /IM java.exe
+          } catch {
+            Write-Output "Nenhuma aplicação rodando"
+          }
+          $jarFile = Get-ChildItem -Path target -Filter *.jar | Select-Object -First 1
+          if ($null -ne $jarFile) {
+          java -jar $jarFile.FullName > application.log 2>&1
+          } else {
+            Write-Output "Nenhum arquivo .jar encontrado na pasta target"
+          }
+        shell: pwsh
