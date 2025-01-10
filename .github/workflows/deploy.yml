@@ -1,0 +1,27 @@
+name: Deploy Spring Boot Application
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted 
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+
+      - name: Build Project
+        run: mvn clean package -DskipTests
+
+      - name: Deploy and Restart
+        run: |
+          taskkill /F /IM java.exe || echo "Nenhuma aplicação rodando"
+          java -jar $(ls target/*.jar | head -n 1) > application.log 2>&1
