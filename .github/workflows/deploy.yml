@@ -21,38 +21,25 @@ jobs:
       - name: Force Unlock Target Directory
         run: |
           Function Unlock-Folder {
-          param ([string]$folderPath)
-          $folder = Get-Item -Path $folderPath
-          $folder.Attributes = 'Normal'
-          Get-ChildItem -Path $folderPath -Recurse | ForEach-Object {
+            param ([string]$folderPath)
+            $folder = Get-Item -Path $folderPath
+            $folder.Attributes = 'Normal'
+            Get-ChildItem -Path $folderPath -Recurse | ForEach-Object {
             $_.Attributes = 'Normal'
-            Stop-Process -Id (Get-Process -FilePath $_.FullName).Id -Force -ErrorAction SilentlyContinue
+          try {
+            Stop-Process -Id (Get-Process | Where-Object { $_.Modules.FileName -eq $_.FullName }).Id -Force -ErrorAction SilentlyContinue
+          } catch {
+          Write-Output "Nenhum processo bloqueando o arquivo: $($_.FullName)"
+          }
           }
           Remove-Item -Path $folderPath -Recurse -Force
           }
           Unlock-Folder -folderPath "C:\actions-runner\GISA_work\GisaAppliction\GisaAppliction\target"
           Write-Output "Diretório target removido com sucesso."
-          
         shell: powershell
+
 
       
-      - name: Force Clean Target Directory
-        run: |
-          Function Unlock-Folder {
-          param ([string]$folderPath)
-          $folder = Get-Item -Path $folderPath
-          $folder.Attributes = 'Normal'
-          Get-ChildItem -Path $folderPath -Recurse | ForEach-Object {
-          $_.Attributes = 'Normal'
-          }
-          Remove-Item -Path $folderPath -Recurse -Force
-          }
-          Unlock-Folder -folderPath "C:\actions-runner\GISA_work\GisaAppliction\GisaAppliction\target"
-          Write-Output "Diretório target removido com sucesso."
-
-          exit 0
-          
-        shell: powershell
 
       - name: Checkout Code
         uses: actions/checkout@v3
