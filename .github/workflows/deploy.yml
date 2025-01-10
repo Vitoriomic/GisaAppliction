@@ -23,14 +23,14 @@ jobs:
           $filePath = "C:\actions-runner\GISA_work\GisaAppliction\GisaAppliction\target\gisaapplication-0.0.1-SNAPSHOT.jar"
           $handleTool = "C:\Sysinternals\handle.exe"
           $handleOutput = & $handleTool $filePath
-          $pids = ($handleOutput -match 'PID: (\d+)' | ForEach-Object { ($_ -split 'PID: ')[1] }).Trim()
-          foreach ($pid in $pids) {
-          Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue
+          $processIds = ($handleOutput -match 'PID: (\d+)' | ForEach-Object { ($_ -split 'PID: ')[1] }).Trim()
+          foreach ($processId in $processIds) {
+          Stop-Process -Id $processId -Force -ErrorAction SilentlyContinue
           }
           Remove-Item -Path "C:\actions-runner\GISA_work\GisaAppliction\GisaAppliction\target" -Recurse -Force
           Write-Output "Arquivo e diretório removidos com sucesso."
-          
         shell: powershell
+
 
       - name: Checkout Code
         uses: actions/checkout@v3
