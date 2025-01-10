@@ -35,4 +35,4 @@ jobs:
           } else {
             Write-Output "Nenhum arquivo .jar encontrado na pasta target"
           }
-        shell: pwsh
+        shell: powershell
