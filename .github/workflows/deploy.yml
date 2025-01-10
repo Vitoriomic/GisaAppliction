@@ -18,35 +18,19 @@ jobs:
         
         shell: powershell
         
-      - name: Force Unlock Target Directory
+      - name: Force Unlock File with Handle
         run: |
-          Function Force-UnlockFile {
-          param ([string]$filePath)
-          $processes = Get-Process | ForEach-Object {
-          try {
-          $_.Modules | Where-Object { $_.FileName -eq $filePath }
-          } catch {
+          $filePath = "C:\actions-runner\GISA_work\GisaAppliction\GisaAppliction\target\gisaapplication-0.0.1-SNAPSHOT.jar"
+          $handleTool = "C:\Sysinternals\handle.exe"
+          $handleOutput = & $handleTool $filePath
+          $pids = ($handleOutput -match 'PID: (\d+)' | ForEach-Object { ($_ -split 'PID: ')[1] }).Trim()
+          foreach ($pid in $pids) {
+          Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue
           }
-          }
-          foreach ($proc in $processes) {
-          if ($proc -ne $null) {
-          Stop-Process -Id $proc.Module.ProcessId -Force -ErrorAction SilentlyContinue
-          Write-Output "Processo $($proc.Module.ProcessName) encerrado para desbloquear $filePath"
-          }
-          }
-          }
-    
-            $jarPath = "C:\actions-runner\GISA_work\GisaAppliction\GisaAppliction\target\gisaapplication-0.0.1-SNAPSHOT.jar"
-            Force-UnlockFile -filePath $jarPath
-    
-            Remove-Item -Path "C:\actions-runner\GISA_work\GisaAppliction\GisaAppliction\target" -Recurse -Force
-            Write-Output "Diretório target removido com sucesso."
-            
+          Remove-Item -Path "C:\actions-runner\GISA_work\GisaAppliction\GisaAppliction\target" -Recurse -Force
+          Write-Output "Arquivo e diretório removidos com sucesso."
+          
         shell: powershell
-
-
-
-      
 
       - name: Checkout Code
         uses: actions/checkout@v3
