@@ -7,9 +7,35 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted 
+    runs-on: self-hosted
 
     steps:
+
+
+      - name: Stop Service and Kill Java
+        run: |
+         $ErrorActionPreference = "Continue"
+          try {
+          Stop-Service -Name "GisaApplicationService" -Force
+          Write-Output "Serviço GisaApplicationService encerrado com sucesso."
+          } catch {
+          Write-Output "Serviço GisaApplicationService não estava em execução."
+          }
+
+          try {
+          taskkill /F /IM java.exe
+          Write-Output "Processos Java encerrados com sucesso."
+          } catch {
+          Write-Output "Nenhum processo Java estava em execução."
+          }
+
+          Remove-Item -Path "C:\actions-runner\GisaAppliction\GisaAppliction\target" -Recurse -Force
+          Write-Output "Diretório target removido com sucesso."
+
+          exit 0
+          
+        shell: powershell
+  
       - name: Checkout Code
         uses: actions/checkout@v3
 
@@ -24,20 +50,27 @@ jobs:
 
       - name: Deploy and Restart
         run: |
-          $ErrorActionPreference = "Continue"
-          try {
-            taskkill /F /IM java.exe
-          } catch {
-            Write-Output "Nenhuma aplicação Java estava rodando"
-          }
-          $jarFile = Get-ChildItem -Path target -Filter *.jar | Select-Object -First 1
-          if ($null -ne $jarFile) {
-            Write-Output "Iniciando aplicação em segundo plano"
-            Start-Process -FilePath "java" -ArgumentList "-jar $($jarFile.FullName)" -NoNewWindow -PassThru
-            Write-Output "Aplicação iniciada com sucesso"
-          } else {
-          Write-Output "Nenhum arquivo .jar encontrado na pasta target"
-          }
-          exit 0
-        shell: powershell
 
+          $ErrorActionPreference = "Stop"
+          $jarFile = Get-ChildItem -Path target -Filter *.jar | Select-Object -First 1
+          
+          try {
+              Stop-Process -Name "java" -Force
+          } catch {
+              Write-Output "Nenhuma aplicação Java estava rodando."
+          }
+
+          if ($null -ne $jarFile) {
+              Write-Output "Arquivo .jar encontrado: $($jarFile.Name)"
+              Write-Output "Iniciando aplicação em segundo plano..."
+              
+              Start-Process -FilePath "java" `
+                            -ArgumentList "-jar $($jarFile.FullName)" `
+                            -NoNewWindow `
+                            -PassThru
+              Write-Output "Aplicação iniciada com sucesso."
+          } else {
+              Write-Output "Erro: Nenhum arquivo .jar encontrado na pasta target."
+              exit 1
+          }
+        shell: powershell
