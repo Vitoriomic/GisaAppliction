@@ -311,3 +311,25 @@ body.modal-open #main-content-wrapper {
     padding: 2px 6px;
     border-radius: 4px;
 }
+
+/* Cores para gravidades */
+.gravidade-desvio {
+    color: gray;
+}
+
+.gravidade-leve {
+    color: lightcoral;
+}
+
+.gravidade-media {
+    color: orange;
+}
+
+.gravidade-grave {
+    color: red;
+}
+
+/* Gravidade padrão (quando não definida ou diferente das conhecidas) */
+.gravidade-default {
+    color: black;
+}

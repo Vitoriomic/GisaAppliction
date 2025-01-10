@@ -122,6 +122,27 @@ function exibirOcorrencias(ocorrencias) {
                     statusClass = "status-default";
             }
 
+            // Determinar a classe para a gravidade
+            let gravidadeClass = "";
+            if (ocorrencia.gravidade) {
+                switch (ocorrencia.gravidade.gravidade) {
+                    case "Desvio":
+                        gravidadeClass = "gravidade-desvio";
+                        break;
+                    case "Inconformidade Leve":
+                        gravidadeClass = "gravidade-leve";
+                        break;
+                    case "Inconformidade Média":
+                        gravidadeClass = "gravidade-media";
+                        break;
+                    case "Inconformidade Grave":
+                        gravidadeClass = "gravidade-grave";
+                        break;
+                    default:
+                        gravidadeClass = "gravidade-default";
+                }
+            }
+
             // Determinar prazo com base no tratamento
             let prazoClass = "";
             let prazo = "";
@@ -165,9 +186,9 @@ function exibirOcorrencias(ocorrencias) {
                 <p><strong>ID:</strong> ${ocorrencia.ocorrenciaId}</p>
                 <p><strong>Local:</strong> ${ocorrencia.obra.nome}</p>
                 <p><strong>Grupo:</strong> ${ocorrencia.grupoOcorrencia.grupoOcorrencia}</p>
-                <p><strong>Gravidade:</strong> ${gravidade}</p>
                 <p><strong>Data:</strong> ${ocorrencia.dataRegistro}</p>
                 <p><strong>Status:</strong> <span class="status ${statusClass}">${ocorrencia.statusOcorrencia.descricao}</span></p>
+                <p><strong>Gravidade:</strong> <span class="${gravidadeClass}">${gravidade}</span></p>
                 <p><strong>${dataExibida}</strong></p>
                 ${prazo && ocorrencia.statusOcorrencia.descricao !== "Finalizada" ? `<p class="prazo ${prazoClass}">${prazo}</p>` : ""}
             `;
@@ -176,7 +197,6 @@ function exibirOcorrencias(ocorrencias) {
         });
     }
 }
-
 
 
 
