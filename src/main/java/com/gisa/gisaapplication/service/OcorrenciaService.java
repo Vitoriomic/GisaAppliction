@@ -21,11 +21,10 @@ public class OcorrenciaService {
     // Processar uma única ocorrência para calcular prazos
     private Ocorrencia processarOcorrencia(Ocorrencia ocorrencia) {
         LocalDate hoje = LocalDate.now();
-        String tratamento = null;
+        String tratamento = ocorrencia.getTratamentoOcorrencia(); // Valor inicial do banco
 
-        if ("Recebida".equals(ocorrencia.getStatusOcorrencia().getDescricao()) ||
-                "Em tratamento".equals(ocorrencia.getStatusOcorrencia().getDescricao())) {
-
+        if (!"Finalizada".equals(ocorrencia.getStatusOcorrencia().getDescricao())) {
+            // Para status não finalizados, calcular prazo
             LocalDate dataAcordada = ocorrencia.getDataAcordada();
             if (dataAcordada != null) {
                 if (hoje.isBefore(dataAcordada)) {
@@ -42,10 +41,13 @@ public class OcorrenciaService {
             }
         }
 
-        // Atualiza o campo "tratamentoOcorrencia" com o prazo ou status calculado
+        // Atualiza o campo "tratamentoOcorrencia" com o valor calculado ou do banco
         ocorrencia.setTratamentoOcorrencia(tratamento);
+
         return ocorrencia;
     }
+
+
 
     // Processar lista de ocorrências
     private List<Ocorrencia> processarListaDeOcorrencias(List<Ocorrencia> ocorrencias) {
@@ -67,15 +69,34 @@ public class OcorrenciaService {
     }
 
     // Buscar ocorrências com filtros
-    public List<Ocorrencia> buscarComFiltros(Integer obraId, Integer statusId) {
-        if (obraId != null && statusId != null) {
-            return ocorrenciaRepository.findByObraIdAndStatusId(obraId, statusId);
-        } else if (obraId != null) {
-            return ocorrenciaRepository.findByObraId(obraId);
-        } else if (statusId != null) {
-            return ocorrenciaRepository.findByStatusId(statusId);
+    public List<Ocorrencia> buscarComFiltros(Integer obraId, Integer statusId, Integer grupoId, LocalDate data) {
+        List<Ocorrencia> ocorrencias = ocorrenciaRepository.findAll();
+
+        if (obraId != null) {
+            ocorrencias = ocorrencias.stream()
+                    .filter(o -> o.getObra().getObraid().equals(obraId))
+                    .collect(Collectors.toList());
         }
-        return ocorrenciaRepository.findAll();
+
+        if (statusId != null) {
+            ocorrencias = ocorrencias.stream()
+                    .filter(o -> o.getStatusOcorrencia().getId().equals(statusId))
+                    .collect(Collectors.toList());
+        }
+
+        if (grupoId != null) {
+            ocorrencias = ocorrencias.stream()
+                    .filter(o -> o.getGrupoOcorrencia().getGrupoOcorrenciaId().equals(grupoId))
+                    .collect(Collectors.toList());
+        }
+
+        if (data != null) {
+            ocorrencias = ocorrencias.stream()
+                    .filter(o -> o.getDataRegistro().isEqual(data))
+                    .collect(Collectors.toList());
+        }
+
+        return processarListaDeOcorrencias(ocorrencias);
     }
 
     // Salvar nova ocorrência

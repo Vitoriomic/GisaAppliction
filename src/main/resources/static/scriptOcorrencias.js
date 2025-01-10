@@ -70,7 +70,7 @@ async function carregarOcorrencias() {
             if (grupoId) params.append("grupoId", grupoId);
             if (data) params.append("data", data);
 
-            url = `/api/ocorrencias?${params.toString()}`;
+            url = `/api/ocorrencias/filtros?${params.toString()}`;
         }
 
         // Chamar API
@@ -87,6 +87,7 @@ async function carregarOcorrencias() {
         button.disabled = false;
     }
 }
+
 
 // Função para exibir ocorrências nos cards
 function exibirOcorrencias(ocorrencias) {
@@ -204,16 +205,90 @@ function exibirOcorrencias(ocorrencias) {
 function abrirModal(ocorrencia) {
     ocorrenciaAtual = ocorrencia;
 
+    // Campos comuns
     document.getElementById("modal-ocorrencia-id").textContent = ocorrencia.ocorrenciaId;
     document.getElementById("modal-ocorrencia-local").textContent = ocorrencia.obra.nome;
     document.getElementById("modal-ocorrencia-grupo").textContent = ocorrencia.grupoOcorrencia.grupoOcorrencia;
-    document.getElementById("modal-ocorrencia-data").textContent = ocorrencia.dataRegistro;
-    document.getElementById("modal-ocorrencia-status").textContent = ocorrencia.statusOcorrencia.descricao;
+
+    // Gravidade com cores
+    const gravidadeElement = document.getElementById("modal-ocorrencia-gravidade");
+    gravidadeElement.textContent = ocorrencia.gravidade.gravidade;
+    switch (ocorrencia.gravidade.gravidade) {
+        case "Desvio":
+            gravidadeElement.style.color = "gray";
+            break;
+        case "Inconformidade Leve":
+            gravidadeElement.style.color = "lightorange";
+            break;
+        case "Inconformidade Média":
+            gravidadeElement.style.color = "orange";
+            break;
+        case "Inconformidade Grave":
+            gravidadeElement.style.color = "red";
+            break;
+        default:
+            gravidadeElement.style.color = "black";
+    }
+
+    // Supervisor
+    document.getElementById("modal-ocorrencia-supervisor").textContent = ocorrencia.supervisor.nome;
+
+    // Datas
+    document.getElementById("modal-ocorrencia-data-registro").textContent = ocorrencia.dataRegistro;
+    document.getElementById("modal-ocorrencia-data-resolucao").textContent = ocorrencia.dataResolucao || "Não definida";
+    document.getElementById("modal-ocorrencia-data-acordada").textContent = ocorrencia.dataAcordada || "Não definida";
+
+    // Descrição e solução
     document.getElementById("modal-ocorrencia-descricao").textContent = ocorrencia.ocorrencia;
     document.getElementById("modal-ocorrencia-detalhamento").textContent = ocorrencia.ocorrenciaDetalhada;
+    document.getElementById("modal-ocorrencia-solucao-imediata").textContent = ocorrencia.solucaoImediata;
+    document.getElementById("modal-ocorrencia-sugestao-solucao").textContent = ocorrencia.sugestaoSolucaoDefinitiva;
 
+    // Tratamento
+    const tratamentoElement = document.getElementById("modal-ocorrencia-tratamento");
+    if (ocorrencia.statusOcorrencia.descricao === "Finalizada") {
+        // Exibir o valor do banco para status finalizados
+        tratamentoElement.textContent = ocorrencia.tratamentoOcorrencia || "Tratamento não definido";
+    } else {
+        // Exibir o prazo processado para outros status
+        tratamentoElement.textContent = ocorrencia.tratamentoOcorrencia || "Sem prazo definido";
+    }
+
+
+
+    // Status com estilo do card
+    const statusElement = document.getElementById("modal-ocorrencia-status");
+    statusElement.textContent = ocorrencia.statusOcorrencia.descricao;
+    statusElement.className = ""; // Resetar classes anteriores
+    switch (ocorrencia.statusOcorrencia.descricao) {
+        case "Recebida":
+            statusElement.classList.add("status-recebida");
+            break;
+        case "Em tratamento":
+            statusElement.classList.add("status-em-tratamento");
+            break;
+        case "Finalizada":
+            statusElement.classList.add("status-finalizada");
+            break;
+        default:
+            statusElement.classList.add("status-default");
+    }
+
+    // Evidência
+    const evidenciaLink = document.getElementById("modal-ocorrencia-evidencia");
+    if (ocorrencia.evidencia && ocorrencia.statusOcorrencia.descricao === "Finalizada") {
+        evidenciaLink.href = ocorrencia.evidencia;
+        evidenciaLink.textContent = "Ver Evidência";
+        evidenciaLink.style.display = "inline";
+    } else {
+        evidenciaLink.style.display = "none";
+    }
+
+    // Exibir modal
     document.getElementById("modal-ocorrencia").style.display = "flex";
 }
+
+
 
 // Função para fechar modal
 function fecharModal() {

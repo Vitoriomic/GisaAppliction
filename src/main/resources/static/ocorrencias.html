@@ -49,19 +49,26 @@
 <!-- Modal para detalhes -->
 <div id="modal-ocorrencia" class="modal" style="display: none;">
     <div class="modal-content">
-        <button id="editar-ocorrencia" onclick="abrirModalEditar()">Editar</button>
-        <button onclick="excluirOcorrencia(ocorrenciaAtual.ocorrenciaId)">Excluir</button>
         <button class="close-button" onclick="fecharModal()">&times;</button>
         <h2>Detalhes da Ocorrência</h2>
         <p><strong>ID:</strong> <span id="modal-ocorrencia-id"></span></p>
         <p><strong>Local:</strong> <span id="modal-ocorrencia-local"></span></p>
         <p><strong>Grupo:</strong> <span id="modal-ocorrencia-grupo"></span></p>
-        <p><strong>Data:</strong> <span id="modal-ocorrencia-data"></span></p>
-        <p><strong>Status:</strong> <span id="modal-ocorrencia-status"></span></p>
+        <p><strong>Gravidade:</strong> <span id="modal-ocorrencia-gravidade"></span></p>
+        <p><strong>Supervisor:</strong> <span id="modal-ocorrencia-supervisor"></span></p>
+        <p><strong>Data de Registro:</strong> <span id="modal-ocorrencia-data-registro"></span></p>
         <p><strong>Descrição:</strong> <span id="modal-ocorrencia-descricao"></span></p>
-        <p><strong>Detalhamento:</strong> <span id="modal-ocorrencia-detalhamento"></span></p>
+        <p><strong>Descrição Detalhada:</strong> <span id="modal-ocorrencia-detalhamento"></span></p>
+        <p><strong>Solução Imediata:</strong> <span id="modal-ocorrencia-solucao-imediata"></span></p>
+        <p><strong>Sugestão de Solução Definitiva:</strong> <span id="modal-ocorrencia-sugestao-solucao"></span></p>
+        <p><strong>Data Acordada:</strong> <span id="modal-ocorrencia-data-acordada"></span></p>
+        <p><strong>Tratamento:</strong> <span id="modal-ocorrencia-tratamento"></span></p>
+        <p><strong>Data de Resolução:</strong> <span id="modal-ocorrencia-data-resolucao"></span></p>
+        <p><strong>Evidência:</strong> <a id="modal-ocorrencia-evidencia" target="_blank" style="display: none;">Ver Evidência</a></p>
+        <p><strong>Status:</strong> <span id="modal-ocorrencia-status"></span></p>
     </div>
 </div>
+
 
 <!-- Modal para adicionar nova ocorrência -->
 <div id="modal-adicionar" class="modal" style="display: none;">

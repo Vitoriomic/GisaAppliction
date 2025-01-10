@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -38,9 +39,15 @@ public class OcorrenciaController {
     @GetMapping("/filtros")
     public ResponseEntity<List<Ocorrencia>> buscarComFiltros(
             @RequestParam(required = false) Integer obraId,
-            @RequestParam(required = false) Integer statusId) {
-        return ResponseEntity.ok(ocorrenciaService.buscarComFiltros(obraId, statusId));
+            @RequestParam(required = false) Integer statusId,
+            @RequestParam(required = false) Integer grupoId,
+            @RequestParam(required = false) String data) {
+
+        LocalDate dataFiltro = (data != null) ? LocalDate.parse(data) : null;
+        List<Ocorrencia> ocorrencias = ocorrenciaService.buscarComFiltros(obraId, statusId, grupoId, dataFiltro);
+        return ResponseEntity.ok(ocorrencias);
     }
+
 
     // Criar nova ocorrência
     @PostMapping
