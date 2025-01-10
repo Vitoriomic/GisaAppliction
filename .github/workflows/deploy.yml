@@ -23,6 +23,8 @@ jobs:
           }
           Unlock-Folder -folderPath "C:\actions-runner\GISA_work\GisaAppliction\GisaAppliction\target"
           Write-Output "Diretório target removido com sucesso."
+
+          exit 0
           
         shell: powershell
 
