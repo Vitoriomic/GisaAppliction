@@ -186,9 +186,9 @@ function exibirOcorrencias(ocorrencias) {
                 <p><strong>ID:</strong> ${ocorrencia.ocorrenciaId}</p>
                 <p><strong>Local:</strong> ${ocorrencia.obra.nome}</p>
                 <p><strong>Grupo:</strong> ${ocorrencia.grupoOcorrencia.grupoOcorrencia}</p>
-                <p><strong>Data:</strong> ${ocorrencia.dataRegistro}</p>
-                <p><strong>Status:</strong> <span class="status ${statusClass}">${ocorrencia.statusOcorrencia.descricao}</span></p>
                 <p><strong>Gravidade:</strong> <span class="${gravidadeClass}">${gravidade}</span></p>
+                <p><strong>Data de Registro:</strong> ${ocorrencia.dataRegistro}</p>
+                <p><strong>Status:</strong> <span class="status ${statusClass}">${ocorrencia.statusOcorrencia.descricao}</span></p>
                 <p><strong>${dataExibida}</strong></p>
                 ${prazo && ocorrencia.statusOcorrencia.descricao !== "Finalizada" ? `<p class="prazo ${prazoClass}">${prazo}</p>` : ""}
             `;

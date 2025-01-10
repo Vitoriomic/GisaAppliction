@@ -318,11 +318,11 @@ body.modal-open #main-content-wrapper {
 }
 
 .gravidade-leve {
-    color: lightcoral;
+    color: orange;
 }
 
 .gravidade-media {
-    color: orange;
+    color: lightcoral;
 }
 
 .gravidade-grave {
