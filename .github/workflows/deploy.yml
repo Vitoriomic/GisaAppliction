@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted 
+    runs-on: self-hosted
 
     steps:
       - name: Checkout Code
@@ -24,22 +24,27 @@ jobs:
 
       - name: Deploy and Restart
         run: |
-          $ErrorActionPreference = "Continue"
-          try {
-          taskkill /F /IM java.exe
-          } catch {
-          Write-Output "Nenhuma aplicação Java estava rodando"
-          }
+
+          $ErrorActionPreference = "Stop"
           $jarFile = Get-ChildItem -Path target -Filter *.jar | Select-Object -First 1
-          if ($null -ne $jarFile) {
-          Write-Output "Iniciando aplicação em segundo plano"
-          Start-Process -FilePath "java" -ArgumentList "-jar $($jarFile.FullName)" -NoNewWindow -PassThru
-          Write-Output "Aplicação iniciada com sucesso"
-          } else {
-          Write-Output "Nenhum arquivo .jar encontrado na pasta target"
+          
+          try {
+              Stop-Process -Name "java" -Force
+          } catch {
+              Write-Output "Nenhuma aplicação Java estava rodando."
           }
 
-          exit 0
-    
+          if ($null -ne $jarFile) {
+              Write-Output "Arquivo .jar encontrado: $($jarFile.Name)"
+              Write-Output "Iniciando aplicação em segundo plano..."
+              
+              Start-Process -FilePath "java" `
+                            -ArgumentList "-jar $($jarFile.FullName)" `
+                            -NoNewWindow `
+                            -PassThru
+              Write-Output "Aplicação iniciada com sucesso."
+          } else {
+              Write-Output "Erro: Nenhum arquivo .jar encontrado na pasta target."
+              exit 1
+          }
         shell: powershell
-
