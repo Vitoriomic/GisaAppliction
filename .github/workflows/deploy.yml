@@ -31,15 +31,13 @@ jobs:
             Write-Output "Nenhuma aplicação Java estava rodando"
           }
           $jarFile = Get-ChildItem -Path target -Filter *.jar | Select-Object -First 1
-            if ($null -ne $jarFile) {
-            Start-Job -ScriptBlock {
-              java -jar $($jarFile.FullName) > application.log 2>&1
-              java -jar $($jarFile.FullName) > C:\temp\application.log 2>&1
-          }
-          Write-Output "Aplicação iniciada com sucesso em segundo plano"
+          if ($null -ne $jarFile) {
+            Write-Output "Iniciando aplicação em segundo plano"
+            Start-Process -FilePath "java" -ArgumentList "-jar $($jarFile.FullName)" -NoNewWindow -PassThru
+            Write-Output "Aplicação iniciada com sucesso"
           } else {
           Write-Output "Nenhum arquivo .jar encontrado na pasta target"
           }
-          exit 0
           
         shell: powershell
+
