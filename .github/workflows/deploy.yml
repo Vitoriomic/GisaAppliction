@@ -10,42 +10,36 @@ jobs:
     runs-on: self-hosted
 
     steps:
-    
+
+
+      - name: Stop Service and Kill Java
+        run: |
+         $ErrorActionPreference = "Continue"
+          try {
+          Stop-Service -Name "GisaApplicationService" -Force
+          Write-Output "Serviço GisaApplicationService encerrado com sucesso."
+          } catch {
+          Write-Output "Serviço GisaApplicationService não estava em execução."
+          }
+
+          try {
+          taskkill /F /IM java.exe
+          Write-Output "Processos Java encerrados com sucesso."
+          } catch {
+          Write-Output "Nenhum processo Java estava em execução."
+          }
+
+          Remove-Item -Path "C:\actions-runner\GisaAppliction\GisaAppliction\target" -Recurse -Force
+          Write-Output "Diretório target removido com sucesso."
+        
+        shell: powershell
+  
       - name: Stop All Processes in Target
         run: |
           Stop-Process -Name "java.exe" -Force -ErrorAction SilentlyContinue
           Write-Output "Todos os processos relacionados ao Java foram encerrados."
         
         shell: powershell
-        
-      - name: Force Unlock File with Handle
-        run: |
-          # Identifica os processos que estão usando o arquivo
-          $handleOutput = & $handleTool $filePath
-          $processIds = $handleOutput | Select-String -Pattern 'PID: (\d+)' | ForEach-Object {
-          ($_ -match 'PID: (\d+)') | Out-Null
-          $Matches[1].Trim()
-          }
-
-          foreach ($processId in $processIds) {
-          if ([int]::TryParse($processId, [ref]$null)) {  # Valida se é um inteiro
-          Write-Output "Encerrando processo com PID: $processId"
-          try {
-            Stop-Process -Id ([int]$processId) -Force -ErrorAction Stop
-            } catch {
-            Write-Output "Erro ao encerrar o processo com PID: $processId. $_"
-            }
-          } else {
-            Write-Output "PID inválido encontrado: $processId"
-          }
-          }
-
-          Remove-Item -Path "C:\actions-runner\GisaAppliction\GisaAppliction\target" -Recurse -Force
-          Write-Output "Arquivo e diretório removidos com sucesso."
-
-        shell: powershell
-
-
 
       - name: Checkout Code
         uses: actions/checkout@v3
