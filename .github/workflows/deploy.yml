@@ -39,5 +39,6 @@ jobs:
           } else {
           Write-Output "Nenhum arquivo .jar encontrado na pasta target"
           }
+          exit 0
           
         shell: powershell
