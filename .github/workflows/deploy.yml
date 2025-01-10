@@ -28,16 +28,15 @@ jobs:
           try {
             taskkill /F /IM java.exe
           } catch {
-            Write-Output "Nenhuma aplicação Java estava rodando"
+          Write-Output "Nenhuma aplicação Java estava rodando"
           }
-          $jarFile = Get-ChildItem -Path target -Filter *.jar | Select-Object -First 1
-          if ($null -ne $jarFile) {
-            Write-Output "Iniciando aplicação em segundo plano"
-            Start-Process -FilePath "java" -ArgumentList "-jar $($jarFile.FullName)" -NoNewWindow -PassThru
-            Write-Output "Aplicação iniciada com sucesso"
+          $jarFile = "C:\Users\Administrator\actions-runner\GISA_work\GisaAppliction\GisaAppliction\target\gisaapplication-0.0.1-SNAPSHOT.jar"
+          if (Test-Path $jarFile) {
+           Start-Process -FilePath "java" -ArgumentList "-jar $jarFile" -NoNewWindow -PassThru
+          Write-Output "Aplicação iniciada com sucesso"
           } else {
-          Write-Output "Nenhum arquivo .jar encontrado na pasta target"
+          Write-Output "Arquivo .jar não encontrado: $jarFile"
           }
           exit 0
+          
         shell: powershell
-
