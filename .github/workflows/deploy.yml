@@ -20,16 +20,29 @@ jobs:
         
       - name: Force Unlock File with Handle
         run: |
-          $filePath = "C:\actions-runner\GISA_work\GisaAppliction\GisaAppliction\target\gisaapplication-0.0.1-SNAPSHOT.jar"
-          $handleTool = "C:\Sysinternals\handle.exe"
+          # Identifica os processos que estão usando o arquivo
           $handleOutput = & $handleTool $filePath
-          $processIds = $handleOutput | Select-String -Pattern 'PID: (\d+)' | ForEach-Object { ($_ -match 'PID: (\d+)') | Out-Null; $Matches[1] }
-          foreach ($processId in $processIds) {
-          Write-Output "Encerrando processo com PID: $processId"
-          Stop-Process -Id [int]$processId -Force -ErrorAction SilentlyContinue
+          $processIds = $handleOutput | Select-String -Pattern 'PID: (\d+)' | ForEach-Object {
+          ($_ -match 'PID: (\d+)') | Out-Null
+          $Matches[1].Trim()
           }
+
+          foreach ($processId in $processIds) {
+          if ([int]::TryParse($processId, [ref]$null)) {  # Valida se é um inteiro
+          Write-Output "Encerrando processo com PID: $processId"
+          try {
+            Stop-Process -Id ([int]$processId) -Force -ErrorAction Stop
+            } catch {
+            Write-Output "Erro ao encerrar o processo com PID: $processId. $_"
+            }
+          } else {
+            Write-Output "PID inválido encontrado: $processId"
+          }
+          }
+
           Remove-Item -Path "C:\actions-runner\GisaAppliction\GisaAppliction\target" -Recurse -Force
           Write-Output "Arquivo e diretório removidos com sucesso."
+
         shell: powershell
 
 
