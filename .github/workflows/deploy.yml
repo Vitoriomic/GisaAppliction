@@ -32,12 +32,12 @@ jobs:
           }
           $jarFile = Get-ChildItem -Path target -Filter *.jar | Select-Object -First 1
           if ($null -ne $jarFile) {
-            Write-Output "Executando: java -jar $($jarFile.FullName)"
-            java -jar $($jarFile.FullName)
-            Write-Output "Aplicação iniciada com sucesso em segundo plano"
+            Write-Output "Iniciando aplicação em segundo plano"
+            Start-Process -FilePath "java" -ArgumentList "-jar $($jarFile.FullName)" -NoNewWindow -PassThru
+            Write-Output "Aplicação iniciada com sucesso"
           } else {
           Write-Output "Nenhum arquivo .jar encontrado na pasta target"
           }
           exit 0
-          
         shell: powershell
+
