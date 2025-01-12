@@ -57,13 +57,26 @@ public class OcorrenciaController {
 
     // Atualizar ocorrência existente
     @PutMapping("/{id}")
-    public ResponseEntity<Ocorrencia> atualizarOcorrencia(@PathVariable Integer id, @RequestBody Ocorrencia ocorrencia) {
+    public ResponseEntity<Ocorrencia> atualizarOcorrencia(@PathVariable Integer id, @RequestBody Ocorrencia ocorrenciaAtualizada) {
         try {
-            return ResponseEntity.ok(ocorrenciaService.atualizarOcorrencia(id, ocorrencia));
+            Ocorrencia ocorrenciaExistente = ocorrenciaService.buscarPorId(id);
+
+            // Atualizar os campos editáveis
+            ocorrenciaExistente.setGravidade(ocorrenciaAtualizada.getGravidade());
+            ocorrenciaExistente.setDataAcordada(ocorrenciaAtualizada.getDataAcordada());
+            ocorrenciaExistente.setTratamentoOcorrencia(ocorrenciaAtualizada.getTratamentoOcorrencia());
+            ocorrenciaExistente.setDataResolucao(ocorrenciaAtualizada.getDataResolucao());
+            ocorrenciaExistente.setEvidencia(ocorrenciaAtualizada.getEvidencia());
+            ocorrenciaExistente.setStatusOcorrencia(ocorrenciaAtualizada.getStatusOcorrencia());
+
+            // Salvar no banco de dados
+            Ocorrencia ocorrenciaAtualizadaBD = ocorrenciaService.salvarOcorrencia(ocorrenciaExistente);
+            return ResponseEntity.ok(ocorrenciaAtualizadaBD);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
 
     // Excluir ocorrência por ID
     @DeleteMapping("/{id}")

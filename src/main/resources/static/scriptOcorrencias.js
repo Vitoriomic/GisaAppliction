@@ -300,3 +300,94 @@ document.addEventListener("DOMContentLoaded", () => {
     carregarOpcoes();
     carregarOcorrencias();
 });
+
+// Filtrar ocorrências vencidas
+async function filtrarOcorrenciasVencidas() {
+    try {
+        const response = await fetch('/api/ocorrencias/filtros'); // Ajuste o endpoint se necessário
+        const ocorrencias = await response.json();
+
+        const vencidas = ocorrencias.filter(ocorrencia => {
+            if (ocorrencia.dataAcordada) {
+                const hoje = new Date();
+                const dataAcordada = new Date(ocorrencia.dataAcordada);
+                return dataAcordada < hoje && ocorrencia.statusOcorrencia.descricao !== "Finalizada";
+            }
+            return false;
+        });
+
+        // Ordenar da mais antiga para a mais recente
+        vencidas.sort((a, b) => new Date(a.dataAcordada) - new Date(b.dataAcordada));
+
+        // Atualizar badge
+        document.getElementById("badge-vencidas").textContent = vencidas.length;
+
+        // Exibir ocorrências vencidas
+        exibirOcorrencias(vencidas);
+    } catch (error) {
+        console.error("Erro ao filtrar ocorrências vencidas:", error);
+    }
+}
+
+// Filtrar não conformidades
+async function filtrarNaoConformidades() {
+    try {
+        const response = await fetch('/api/ocorrencias/filtros'); // Ajuste o endpoint se necessário
+        const ocorrencias = await response.json();
+
+        const naoConformidades = ocorrencias.filter(ocorrencia => {
+            return ["Inconformidade Leve", "Inconformidade Média", "Inconformidade Grave"].includes(
+                ocorrencia.gravidade.gravidade
+            );
+        });
+
+        // Ordenar da mais grave para a mais leve
+        const gravidadeMap = {
+            "Inconformidade Grave": 3,
+            "Inconformidade Média": 2,
+            "Inconformidade Leve": 1,
+        };
+
+        naoConformidades.sort((a, b) => gravidadeMap[b.gravidade.gravidade] - gravidadeMap[a.gravidade.gravidade]);
+
+        // Atualizar badge
+        document.getElementById("badge-nao-conformidades").textContent = naoConformidades.length;
+
+        // Exibir ocorrências de não conformidades
+        exibirOcorrencias(naoConformidades);
+    } catch (error) {
+        console.error("Erro ao filtrar não conformidades:", error);
+    }
+}
+
+// Atualizar os badges ao carregar a página
+async function atualizarBadges() {
+    try {
+        const response = await fetch('/api/ocorrencias/filtros'); // Ajuste o endpoint se necessário
+        const ocorrencias = await response.json();
+
+        const vencidas = ocorrencias.filter(ocorrencia => {
+            if (ocorrencia.dataAcordada) {
+                const hoje = new Date();
+                const dataAcordada = new Date(ocorrencia.dataAcordada);
+                return dataAcordada < hoje && ocorrencia.statusOcorrencia.descricao !== "Finalizada";
+            }
+            return false;
+        });
+
+        const naoConformidades = ocorrencias.filter(ocorrencia => {
+            return ["Inconformidade Leve", "Inconformidade Média", "Inconformidade Grave"].includes(
+                ocorrencia.gravidade.gravidade
+            );
+        });
+
+        document.getElementById("badge-vencidas").textContent = vencidas.length;
+        document.getElementById("badge-nao-conformidades").textContent = naoConformidades.length;
+    } catch (error) {
+        console.error("Erro ao atualizar badges:", error);
+    }
+}
+
+// Chamar a função ao carregar a página
+document.addEventListener("DOMContentLoaded", atualizarBadges);
+
