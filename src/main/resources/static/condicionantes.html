@@ -50,11 +50,10 @@
         <button id="editar-condicionante" onclick="abrirModalEditar()">Editar</button>
         <button onclick="excluirCondicionante(condicionanteAtual.condicionanteId)">Excluir</button>
         <button class="close-button" onclick="fecharModal()">&times;</button>
-        <h2>Detalhes do Condicionante</h2>
-        <p><strong>ID:</strong> <span id="modal-condicionante-id"></span></p>
+        <h2>Detalhes da Condicionante</h2>
         <p><strong>Obra:</strong> <span id="modal-condicionante-obra"></span></p>
-        <p><strong>Descrição:</strong> <span id="modal-condicionante-descricao"></span></p>
         <p><strong>Identificação:</strong> <span id="modal-condicionante-identificacao"></span></p>
+        <p><strong>Descrição:</strong> <span id="modal-condicionante-descricao"></span></p>
         <p><strong>Status:</strong> <span id="modal-condicionante-status"></span></p>
         <p><strong>Comprovação:</strong> <a id="modal-condicionante-comprovacao" href="#" target="_blank" style="word-break: break-word;"></a></p>
         <p><strong>Prazo de Vencimento:</strong> <span id="modal-condicionante-prazo"></span></p>
@@ -80,15 +79,15 @@
                     <option value="">Selecione uma obra</option>
                 </select>
             </div>
-            <!-- Descrição -->
-            <div class="form-group">
-                <label for="condicionante-adicionar">Descrição:</label>
-                <textarea id="condicionante-adicionar" placeholder="Descrição da condicionante" required></textarea>
-            </div>
             <!-- Identificação -->
             <div class="form-group">
                 <label for="identificacao-adicionar">Identificação:</label>
                 <input type="text" id="identificacao-adicionar" placeholder="Identificação" required>
+            </div>
+            <!-- Descrição -->
+            <div class="form-group">
+                <label for="condicionante-adicionar">Descrição:</label>
+                <textarea id="condicionante-adicionar" placeholder="Descrição da condicionante" required></textarea>
             </div>
             <!-- Status -->
             <div class="form-group">
@@ -164,17 +163,17 @@
             <!-- Obra -->
             <div class="form-group">
                 <label for="obra-editar">Obra:</label>
-                <select id="obra-editar"></select>
+                <p id="obra-editar" ></p>
             </div>
             <!-- Descrição -->
             <div class="form-group">
                 <label for="condicionante-editar">Descrição:</label>
-                <textarea id="condicionante-editar"></textarea>
+                <p id="condicionante-editar" ></p>
             </div>
             <!-- Identificação -->
             <div class="form-group">
                 <label for="identificacao-editar">Identificação:</label>
-                <input type="text" id="identificacao-editar" />
+                <p id="identificacao-editar" ></p>
             </div>
             <!-- Status -->
             <div class="form-group">

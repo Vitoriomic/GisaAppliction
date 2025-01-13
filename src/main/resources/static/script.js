@@ -92,13 +92,38 @@ function exibirCondicionantes(condicionantes) {
         container.innerHTML = "<p>Nenhum condicionante encontrado.</p>";
     } else {
         condicionantes.forEach(condicionante => {
-            const card = document.createElement("div");
-            card.className = "card";
+        const card = document.createElement("div");
+        card.className = "card";
+        // Determina a classe CSS com base no status
+            let statusClass = "";
+            switch (condicionante.statusCondicionante.status) {
+                case "Não atendida":
+                    statusClass = "status-nao-atendida";
+                    break;
+                case "Não iniciada":
+                    statusClass = "status-nao-iniciada";
+                    break;
+                case "Em atendimento":
+                    statusClass = "status-em-atendimento";
+                    break;
+                case "Comprovação obtida":
+                    statusClass = "status-comprovacao-obtida";
+                    break;
+                case "Atendida":
+                    statusClass = "status-atendida";
+                    break;
+            }
+
+            // Determina a classe para Ação de Atendimento
+            let acaoClass = condicionante.acaoAtendimento === "Pendente" ? "acao-pendente" : "";
+
             card.innerHTML = `
-                <p><strong>ID:</strong> ${condicionante.condicionanteId}</p>
                 <p><strong>Obra:</strong> ${condicionante.obra.nome}</p>
-                <p><strong>Status:</strong> ${condicionante.statusCondicionante.status}</p>
                 <p><strong>Identificação:</strong> ${condicionante.identificacao}</p>
+                <p class="truncate"><strong>Descrição:</strong> ${condicionante.condicionante}</p>
+                <p><strong>Status:</strong> <span class="${statusClass}">${condicionante.statusCondicionante.status}</span></p>
+                <p><strong>Ação de Atendimento:</strong> <span class="${acaoClass}">${condicionante.acaoAtendimento}</span></p>                <p><strong>Comprovação Protocolada:</strong> ${condicionante.protocolacao.status}</p>
+                <p><strong>Prazo de Vencimento:</strong> ${condicionante.prazoVencimento}</p>
             `;
             card.addEventListener("click", () => abrirModal(condicionante));
             container.appendChild(card);
@@ -110,12 +135,41 @@ function exibirCondicionantes(condicionantes) {
 function abrirModal(condicionante) {
     condicionanteAtual = condicionante; // Armazena o condicionante atual
 
-    document.getElementById("modal-condicionante-id").textContent = condicionante.condicionanteId;
     document.getElementById("modal-condicionante-obra").textContent = condicionante.obra.nome;
     document.getElementById("modal-condicionante-descricao").textContent = condicionante.condicionante;
     document.getElementById("modal-condicionante-identificacao").textContent = condicionante.identificacao;
-    document.getElementById("modal-condicionante-status").textContent = condicionante.statusCondicionante.status;
+    // Determina a classe CSS com base no status
+    let statusClass = "";
+    switch (condicionante.statusCondicionante.status) {
+        case "Não atendida":
+            statusClass = "status-nao-atendida";
+            break;
+        case "Não iniciada":
+            statusClass = "status-nao-iniciada";
+            break;
+        case "Em atendimento":
+            statusClass = "status-em-atendimento";
+            break;
+        case "Comprovação obtida":
+            statusClass = "status-comprovacao-obtida";
+            break;
+        case "Atendida":
+            statusClass = "status-atendida";
+            break;
+    }
+
+    const statusElement = document.getElementById("modal-condicionante-status");
+    statusElement.textContent = condicionante.statusCondicionante.status;
+    statusElement.className = statusClass; // Aplica a classe ao status
+
+     // Define a classe CSS para Ação de Atendimento
+     const acaoClass = condicionante.acaoAtendimento === "Pendente" ? "acao-pendente" : "";
+
+
     document.getElementById("modal-condicionante-comprovacao").textContent = condicionante?.comprovacao;
+        const acaoElement = document.getElementById("modal-condicionante-acao");
+        acaoElement.textContent = condicionante.acaoAtendimento;
+        acaoElement.className = acaoClass;
 
     const comprovacaoElement = document.getElementById("modal-condicionante-comprovacao");
     if (condicionante.comprovacao && condicionante.comprovacao.startsWith("http")) {
@@ -316,9 +370,12 @@ async function abrirModalEditar() {
 
         console.log("Condicionante atual:", condicionanteAtual);
 
+        // Preencher os campos fixos
+        document.getElementById("obra-editar").textContent = condicionanteAtual.obra.nome || "Não especificado";
+        document.getElementById("condicionante-editar").textContent = condicionanteAtual.condicionante || "Não especificado";
+        document.getElementById("identificacao-editar").textContent = condicionanteAtual.identificacao || "Não especificado";
+
         // Preencher os campos do formulário de edição
-        document.getElementById("condicionante-editar").value = condicionanteAtual.condicionante || "";
-        document.getElementById("identificacao-editar").value = condicionanteAtual.identificacao || "";
         document.getElementById("comprovacao-editar").value = condicionanteAtual.comprovacao || "";
         document.getElementById("prazo-editar").value = condicionanteAtual.prazoVencimento || "";
         document.getElementById("situacao-editar").value = condicionanteAtual.situacao || "";
@@ -326,7 +383,6 @@ async function abrirModalEditar() {
         document.getElementById("data-atendimento-editar").value = condicionanteAtual.dataAtendimento || "";
 
         // Carregar selects e selecionar as opções corretas
-        await carregarSelectComValor("/api/obras", "obra-editar", condicionanteAtual.obra?.obraid);
         await carregarSelectComValor("/api/status-condicionantes", "status-editar", condicionanteAtual.statusCondicionante?.statusId);
         await carregarSelectComValor("/api/responsabilidades/terceiros", "responsavel-terceiros-editar", condicionanteAtual.responsabilidadeTerceiros?.respterceirosid);
         await carregarSelectComValor("/api/responsabilidades/cliente", "responsavel-cliente-editar", condicionanteAtual.responsabilidadeCliente?.respclienteid);
@@ -396,9 +452,9 @@ function fecharModalEditar() {
 // Salvar alterações na condicionante
 async function salvarCondicionante() {
      const condicionanteAtualizada = {
-            obraId: document.getElementById("obra-editar").value || null,
-            identificacao: document.getElementById("identificacao-editar").value || null,
-            condicionante: document.getElementById("condicionante-editar").value || null,
+            obraId: condicionanteAtual.obra.obraid || null,
+            identificacao: condicionanteAtual.identificacao || null,
+            condicionante: condicionanteAtual.condicionante || null,
             statusId: document.getElementById("status-editar").value || null,
             comprovacao: document.getElementById("comprovacao-editar").value || null,
             prazoVencimento: document.getElementById("prazo-editar").value || null,
