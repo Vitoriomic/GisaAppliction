@@ -388,9 +388,13 @@ body.modal-open #main-content-wrapper {
 }
 
 .status-atendida {
-    color: green;
+    color: white;
+    background-color: green;
+    padding: 3px 8px;
+    border-radius: 5px;
     font-weight: bold;
 }
+
 
 .acao-pendente {
     color: red;
@@ -493,5 +497,12 @@ body.modal-open #main-content-wrapper {
 .button-danger:disabled {
     background-color: #ccc; /* Cinza para desativado */
     cursor: not-allowed;
+}
+.required-label {
+    color: red;
+    font-weight: bold;
+    margin-left: 4px;
+    font-size: 20px;
+
 }
 

@@ -41,6 +41,9 @@ public class CondicionanteService {
             if (identificacao != null && !identificacao.isEmpty()) {
                 predicates.add(cb.like(root.get("identificacao"), "%" + identificacao + "%"));
             }
+            if (protocolacaoId != null) {
+                predicates.add(cb.equal(root.get("protocolacao").get("protocolacaoId"), protocolacaoId));
+            }
             if ("Pendente".equalsIgnoreCase(acaoAtendimento)) {
                 // Filtro para registros pendentes
                 predicates.add(cb.equal(root.get("acaoAtendimento"), "Pendente"));

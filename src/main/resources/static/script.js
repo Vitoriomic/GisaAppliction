@@ -74,7 +74,7 @@ async function carregarCondicionantes() {
 
         const obraId = document.getElementById("filtro-obra").value;
         const identificacao = document.getElementById("filtro-identificacao").value.trim();
-        const protocolada = document.getElementById("filtro-protocolada").value;
+        const protocolacaoId = document.getElementById("filtro-protocolada").value;
         const acaoAtendimento = document.getElementById("filtro-acoes").value;
         const statusIds = getSelectedStatuses();
 
@@ -82,7 +82,7 @@ async function carregarCondicionantes() {
         const params = new URLSearchParams();
         if (obraId) params.append("obraId", obraId);
         if (identificacao) params.append("identificacao", identificacao);
-        if (protocolada) params.append("protocolacaoId", protocolada);
+        if (protocolacaoId) params.append("protocolacaoId", protocolacaoId);
         if (acaoAtendimento) params.append("acaoAtendimento", acaoAtendimento);
         if (statusIds.length > 0) params.append("statusIds", statusIds.join(","));
 
