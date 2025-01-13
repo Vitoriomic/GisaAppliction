@@ -10,6 +10,7 @@ body {
 }
 
 header {
+    position: relative; /* Necessário para posicionar a logo */
     background-color: #4CAF50;
     color: white;
     padding: 20px;
@@ -17,6 +18,7 @@ header {
     width: 100%;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
 
 main {
     flex: 1;
@@ -159,7 +161,7 @@ main {
     overflow-y: auto;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     animation: fadeIn 0.3s ease-in-out;
-
+    position: relative; /* Isso permite que o botão "X" fique relativo ao card */
 }
 
 .modal-content p {
@@ -185,50 +187,17 @@ main {
     background: none;
     border: none;
     cursor: pointer;
+    z-index: 10;
+    color: #3e8e41;
 }
+
 
 .close-button:hover {
     color: #4CAF50;
 }
 
 /* Botão de Adicionar */
-.add-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #4CAF50;
-    color: white;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
 
-.add-button:hover {
-    background-color: #45a049;
-    transform: scale(1.1);
-}
-
-.add-button .tooltip {
-    display: none;
-    position: absolute;
-    bottom: 60px;
-    background: black;
-    color: white;
-    padding: 5px;
-    border-radius: 5px;
-    font-size: 12px;
-    text-align: center;
-}
-
-.add-button:hover .tooltip {
-    display: block;
-}
 
 /* Botão Salvar */
 .save-button {
@@ -394,6 +363,124 @@ button:hover {
     right: -10px;
 }
 
+/* Estilo geral do formulário */
+.form-edit {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    font-size: 14px;
+}
 
+/* Form Group */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #4CAF50;
+    outline: none;
+}
+
+/* Textarea */
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Botões */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.btn-save {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-save:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.btn-cancel {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-cancel:hover {
+    background-color: #d32f2f;
+    transform: scale(1.05);
+}
+
+/* Modal */
+.modal-content {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Animação de fade */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#btn-download {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#btn-download:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
 
 
