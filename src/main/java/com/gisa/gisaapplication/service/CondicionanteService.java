@@ -2,8 +2,11 @@ package com.gisa.gisaapplication.service;
 
 import com.gisa.gisaapplication.model.Condicionante;
 import com.gisa.gisaapplication.repository.CondicionanteRepository;
+import jakarta.persistence.criteria.Predicate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,16 +30,36 @@ public class CondicionanteService {
     }
 
     // Lógica para buscar condicionantes com filtros
-    public List<Condicionante> buscarComFiltros(Integer obraId, Integer statusId) {
-        if (obraId != null && statusId != null) {
-            return condicionanteRepository.findByObraIdAndStatusId(obraId, statusId);
-        } else if (obraId != null) {
-            return condicionanteRepository.findByObraId(obraId);
-        } else if (statusId != null) {
-            return condicionanteRepository.findByStatusId(statusId);
-        }
-        return condicionanteRepository.findAll();
+    public List<Condicionante> buscarComFiltros(Integer obraId, String identificacao, Integer protocolacaoId,
+                                                String acaoAtendimento, List<Integer> statusIds) {
+        return condicionanteRepository.findAll((root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (obraId != null) {
+                predicates.add(cb.equal(root.get("obra").get("obraid"), obraId));
+            }
+            if (identificacao != null && !identificacao.isEmpty()) {
+                predicates.add(cb.like(root.get("identificacao"), "%" + identificacao + "%"));
+            }
+            if ("Pendente".equalsIgnoreCase(acaoAtendimento)) {
+                // Filtro para registros pendentes
+                predicates.add(cb.equal(root.get("acaoAtendimento"), "Pendente"));
+            } else if ("Preenchidas".equalsIgnoreCase(acaoAtendimento)) {
+                // Filtro para registros preenchidos
+                predicates.add(cb.or(
+                        cb.notEqual(root.get("acaoAtendimento"), "Pendente"),
+                        cb.isNull(root.get("acaoAtendimento"))
+                ));
+            }
+            if (statusIds != null && !statusIds.isEmpty()) {
+                predicates.add(root.get("statusCondicionante").get("statusId").in(statusIds));
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        });
     }
+
+
 
     public void salvarCondicionante(Condicionante condicionante) {
         // Validações adicionais, se necessário
@@ -50,5 +73,10 @@ public class CondicionanteService {
     public void excluirCondicionante(int id) {
         Condicionante condicionante = buscarPorId(id); // Verifica se a condicionante existe
         condicionanteRepository.delete(condicionante);
+    }
+
+    public List<Condicionante> buscarTodos() {
+        // Busca todos os registros de condicionantes
+        return condicionanteRepository.findAll();
     }
 }

@@ -18,16 +18,49 @@ async function carregarOpcoes() {
         // Carregar status
         const statusResponse = await fetch("/api/status-condicionantes");
         const statusList = await statusResponse.json();
-        const filtroStatus = document.getElementById("filtro-status");
+        const statusContainer = document.querySelector("#multi-select-status .dropdown-options");
         statusList.forEach(status => {
+            const label = document.createElement("label");
+            label.innerHTML = `<input type="checkbox" value="${status.statusId}"> ${status.status}`;
+            statusContainer.appendChild(label);
+        });
+
+        // Carregar protocolações
+        const protocolacaoResponse = await fetch("/api/protocolacoes");
+        const protocolacaoList = await protocolacaoResponse.json();
+        const filtroProtocolada = document.getElementById("filtro-protocolada");
+        protocolacaoList.forEach(protocolacao => {
             const option = document.createElement("option");
-            option.value = status.statusId; // O id será enviado no filtro
-            option.textContent = status.status; // Nome será exibido
-            filtroStatus.appendChild(option);
+            option.value = protocolacao.protocolacaoId;
+            option.textContent = protocolacao.status;
+            filtroProtocolada.appendChild(option);
         });
     } catch (error) {
         console.error("Erro ao carregar opções:", error);
     }
+}
+
+// Abrir/Fechar o dropdown de seleção múltipla
+document.getElementById("multi-select-status").addEventListener("click", function (event) {
+    this.classList.toggle("active");
+    event.stopPropagation(); // Impede que o clique feche outras interações
+});
+
+// Fechar dropdown ao clicar fora
+document.addEventListener("click", function () {
+    document.getElementById("multi-select-status").classList.remove("active");
+});
+
+// Função para coletar os valores selecionados no filtro de múltipla escolha
+function getSelectedStatuses() {
+    const checkboxes = document.querySelectorAll("#multi-select-status .dropdown-options input[type='checkbox']");
+    const selectedValues = [];
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            selectedValues.push(checkbox.value);
+        }
+    });
+    return selectedValues;
 }
 
 // Função para carregar condicionantes com filtros aplicados
@@ -36,40 +69,33 @@ async function carregarCondicionantes() {
     const button = document.getElementById("btn-filtrar");
 
     try {
-        // Exibir o círculo de carregamento
         spinner.style.display = "inline-block";
-        button.disabled = true; // Desativar o botão durante o carregamento
+        button.disabled = true;
 
-        const obraId = document.getElementById("filtro-obra").value; // ID da obra selecionada
-        const statusId = document.getElementById("filtro-status").value; // ID do status selecionado
-        const id = document.getElementById("filtro-id").value.trim(); // ID da condicionante
+        const obraId = document.getElementById("filtro-obra").value;
+        const identificacao = document.getElementById("filtro-identificacao").value.trim();
+        const protocolada = document.getElementById("filtro-protocolada").value;
+        const acaoAtendimento = document.getElementById("filtro-acoes").value;
+        const statusIds = getSelectedStatuses();
 
-        let url;
-        if (id) {
-            // Caso um ID tenha sido fornecido, buscar diretamente pelo ID
-            url = `/api/condicionantes/${id}`;
-        } else {
-            // Construir parâmetros de busca para obra e status
-            const params = new URLSearchParams();
-            if (obraId) params.append("obraId", obraId);
-            if (statusId) params.append("statusId", statusId);
+        // Construir parâmetros de busca
+        const params = new URLSearchParams();
+        if (obraId) params.append("obraId", obraId);
+        if (identificacao) params.append("identificacao", identificacao);
+        if (protocolada) params.append("protocolacaoId", protocolada);
+        if (acaoAtendimento) params.append("acaoAtendimento", acaoAtendimento);
+        if (statusIds.length > 0) params.append("statusIds", statusIds.join(","));
 
-            url = `/api/condicionantes?${params.toString()}`;
-        }
-
-        // Chamar a API
+        const url = `/api/condicionantes?${params.toString()}`;
         const response = await fetch(url);
 
-        if (!response.ok) {
-            throw new Error("Erro ao buscar condicionantes.");
-        }
+        if (!response.ok) throw new Error("Erro ao buscar condicionantes.");
 
-        const condicionantes = id ? [await response.json()] : await response.json(); // Se for busca por ID, retornará um único objeto
+        const condicionantes = await response.json();
         exibirCondicionantes(condicionantes);
     } catch (error) {
         console.error("Erro ao carregar condicionantes:", error);
     } finally {
-        // Ocultar o círculo de carregamento e reativar o botão
         spinner.style.display = "none";
         button.disabled = false;
     }
@@ -122,7 +148,8 @@ function exibirCondicionantes(condicionantes) {
                 <p><strong>Identificação:</strong> ${condicionante.identificacao}</p>
                 <p class="truncate"><strong>Descrição:</strong> ${condicionante.condicionante}</p>
                 <p><strong>Status:</strong> <span class="${statusClass}">${condicionante.statusCondicionante.status}</span></p>
-                <p><strong>Ação de Atendimento:</strong> <span class="${acaoClass}">${condicionante.acaoAtendimento}</span></p>                <p><strong>Comprovação Protocolada:</strong> ${condicionante.protocolacao.status}</p>
+                <p><strong>Ação de Atendimento:</strong> <span class="${acaoClass}">${condicionante.acaoAtendimento}</span></p>
+                <p><strong>Comprovação Protocolada:</strong> ${condicionante.protocolacao.status}</p>
                 <p><strong>Prazo de Vencimento:</strong> ${condicionante.prazoVencimento}</p>
             `;
             card.addEventListener("click", () => abrirModal(condicionante));

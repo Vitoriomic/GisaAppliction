@@ -29,8 +29,11 @@ public class CondicionanteController {
     @GetMapping
     public List<Condicionante> buscarCondicionantesComFiltros(
             @RequestParam(required = false) Integer obraId,
-            @RequestParam(required = false) Integer statusId) {
-        return condicionanteService.buscarComFiltros(obraId, statusId);
+            @RequestParam(required = false) String identificacao,
+            @RequestParam(required = false) Integer protocolacaoId,
+            @RequestParam(required = false) String acaoAtendimento,
+            @RequestParam(required = false) List<Integer> statusIds) {
+        return condicionanteService.buscarComFiltros(obraId, identificacao, protocolacaoId, acaoAtendimento, statusIds);
     }
 
     // Buscar condicionante por ID

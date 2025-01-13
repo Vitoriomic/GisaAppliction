@@ -2,12 +2,13 @@ package com.gisa.gisaapplication.repository;
 
 import com.gisa.gisaapplication.model.Condicionante;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface CondicionanteRepository extends JpaRepository<Condicionante, Integer> {
+public interface CondicionanteRepository extends JpaRepository<Condicionante, Integer>, JpaSpecificationExecutor<Condicionante> {
 
     // Consulta para filtrar por obra
     @Query("SELECT c FROM Condicionante c WHERE c.obra.obraid = :obraId")
@@ -20,4 +21,5 @@ public interface CondicionanteRepository extends JpaRepository<Condicionante, In
     // Consulta para filtrar por obra e status
     @Query("SELECT c FROM Condicionante c WHERE c.obra.obraid = :obraId AND c.statusCondicionante.statusId = :statusId")
     List<Condicionante> findByObraIdAndStatusId(@Param("obraId") Integer obraId, @Param("statusId") Integer statusId);
+
 }

@@ -401,14 +401,14 @@ body.modal-open #main-content-wrapper {
     display: inline-block;
     width: 200px;
     font-family: Arial, sans-serif;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .multi-select-dropdown .selected-value {
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 10px;
-    background-color: white;
+    background-color: #e9e9ed;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -417,14 +417,14 @@ body.modal-open #main-content-wrapper {
 
 .multi-select-dropdown .selected-value::after {
     content: "▼";
-    font-size: 12px;
+    font-size: 11px;
     margin-left: 8px;
 }
 
 .multi-select-dropdown .dropdown-options {
     position: absolute;
     z-index: 1000;
-    background: white;
+    background: #f9f9fb;
     border: 1px solid #ccc;
     border-radius: 4px;
     width: 100%;
@@ -443,7 +443,7 @@ body.modal-open #main-content-wrapper {
 }
 
 .multi-select-dropdown .dropdown-options label:hover {
-    background-color: #f0f0f0;
+    background-color: #e9e9ed;
 }
 
 .multi-select-dropdown .dropdown-options input[type="checkbox"] {
@@ -453,3 +453,45 @@ body.modal-open #main-content-wrapper {
 .multi-select-dropdown.active .dropdown-options {
     display: block;
 }
+/* Botão Padrão (Editar, Salvar, Filtrar) */
+.button-primary {
+    background-color: #4CAF50; /* Verde base */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.button-primary:hover {
+    background-color: #45a049; /* Tom mais claro ao hover */
+}
+
+.button-primary:disabled {
+    background-color: #ccc; /* Cinza para desativado */
+    cursor: not-allowed;
+}
+
+/* Botão Excluir (Vermelho) */
+.button-danger {
+    background-color: #f44336; /* Vermelho base */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.button-danger:hover {
+    background-color: #e57373; /* Vermelho mais claro ao hover */
+}
+
+.button-danger:disabled {
+    background-color: #ccc; /* Cinza para desativado */
+    cursor: not-allowed;
+}
+
