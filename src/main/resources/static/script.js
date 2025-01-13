@@ -540,7 +540,26 @@ async function excluirCondicionante(id) {
         alert(`Erro ao excluir a condicionante: ${err.message}`);
     }
 }
+function validarFormulario(formId) {
+    const form = document.getElementById(formId);
+    const inputs = form.querySelectorAll("[required]");
+    let valido = true;
 
+    inputs.forEach(input => {
+        if (!input.value.trim()) {
+            valido = false;
+            input.style.border = "1px solid red"; // Destaque o campo vazio
+        } else {
+            input.style.border = ""; // Remove o destaque
+        }
+    });
+
+    if (!valido) {
+        alert("Por favor, preencha todos os campos obrigatórios.");
+    }
+
+    return valido;
+}
 
 // Inicializar a página
 document.addEventListener("DOMContentLoaded", () => {

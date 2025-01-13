@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciar Condicionantes</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
 </head>
 <body>
 <header>
@@ -161,7 +162,7 @@
             </div>
             <!-- Botão -->
             <div class="form-actions">
-                <button type="button" class="btn" id="modal-action-button" onclick="adicionarCondicionante()">Adicionar</button>
+                <button type="button" class="btn" id="modal-action-button" onclick="if (validarFormulario('form-adicionar')) adicionarCondicionante()">Adicionar</button>
             </div>
         </form>
     </div>
@@ -239,7 +240,7 @@
             </div>
             <!-- Botão -->
             <div class="form-actions">
-                <button class="button-primary" type="button" onclick="salvarCondicionante()">Salvar</button>
+                <button class="button-primary" type="button" onclick="if (validarFormulario('form-editar')) salvarCondicionante()">Salvar</button>
             </div>
         </form>
     </div>
