@@ -77,7 +77,23 @@ async function carregarOcorrencias() {
         const response = await fetch(url);
         if (!response.ok) throw new Error("Erro ao buscar ocorrências.");
 
-        const ocorrencias = id ? [await response.json()] : await response.json();
+        let ocorrencias = id ? [await response.json()] : await response.json();
+
+        // Aplicar o filtro de vencidas, se estiver ativo
+        if (filtroVencidasAtivo) {
+            const hoje = new Date();
+            ocorrencias = ocorrencias.filter(ocorrencia => {
+                if (ocorrencia.dataAcordada) {
+                    const dataAcordada = new Date(ocorrencia.dataAcordada);
+                    return (
+                        dataAcordada < hoje &&
+                        ocorrencia.statusOcorrencia.descricao !== "Finalizada"
+                    );
+                }
+                return false;
+            });
+        }
+
         exibirOcorrencias(ocorrencias);
     } catch (error) {
         console.error("Erro ao carregar ocorrências:", error);
@@ -301,33 +317,30 @@ document.addEventListener("DOMContentLoaded", () => {
     carregarOcorrencias();
 });
 
+let filtroVencidasAtivo = false; // Controla se o filtro de vencidas está ativo
+
 // Filtrar ocorrências vencidas
 async function filtrarOcorrenciasVencidas() {
-    try {
-        const response = await fetch('/api/ocorrencias/filtros'); // Ajuste o endpoint se necessário
-        const ocorrencias = await response.json();
-
-        const vencidas = ocorrencias.filter(ocorrencia => {
-            if (ocorrencia.dataAcordada) {
-                const hoje = new Date();
-                const dataAcordada = new Date(ocorrencia.dataAcordada);
-                return dataAcordada < hoje && ocorrencia.statusOcorrencia.descricao !== "Finalizada";
-            }
-            return false;
-        });
-
-        // Ordenar da mais antiga para a mais recente
-        vencidas.sort((a, b) => new Date(a.dataAcordada) - new Date(b.dataAcordada));
-
-        // Atualizar badge
-        document.getElementById("badge-vencidas").textContent = vencidas.length;
-
-        // Exibir ocorrências vencidas
-        exibirOcorrencias(vencidas);
-    } catch (error) {
-        console.error("Erro ao filtrar ocorrências vencidas:", error);
-    }
+    filtroVencidasAtivo = true; // Ativar o filtro de vencidas
+    await carregarOcorrencias(); // Recarregar ocorrências com o filtro ativo
 }
+
+function resetarFiltroVencidas() {
+    // Resetar o filtro de ocorrências vencidas
+    filtroVencidasAtivo = false;
+
+    // Limpar valores dos filtros
+    document.getElementById("filtro-obra").value = "";
+    document.getElementById("filtro-grupo").value = "";
+    document.getElementById("filtro-status").value = "";
+    document.getElementById("filtro-data").value = "";
+    document.getElementById("filtro-id").value = "";
+
+    // Recarregar todas as ocorrências sem filtros
+    carregarOcorrencias();
+}
+
+
 
 // Filtrar não conformidades
 async function filtrarNaoConformidades() {
