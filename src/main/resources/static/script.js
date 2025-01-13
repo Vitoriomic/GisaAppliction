@@ -25,6 +25,9 @@ async function carregarOpcoes() {
             statusContainer.appendChild(label);
         });
 
+        // Associar eventos após carregar dinamicamente os checkboxes
+        associarEventosCheckbox();
+
         // Carregar protocolações
         const protocolacaoResponse = await fetch("/api/protocolacoes");
         const protocolacaoList = await protocolacaoResponse.json();
@@ -38,6 +41,13 @@ async function carregarOpcoes() {
     } catch (error) {
         console.error("Erro ao carregar opções:", error);
     }
+}
+
+function associarEventosCheckbox() {
+    const checkboxes = document.querySelectorAll("#multi-select-status .dropdown-options input[type='checkbox']");
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", atualizarTextoStatus);
+    });
 }
 
 // Abrir/Fechar o dropdown de seleção múltipla
@@ -62,6 +72,47 @@ function getSelectedStatuses() {
     });
     return selectedValues;
 }
+
+// Função para atualizar o texto do filtro de múltipla seleção
+function atualizarTextoStatus() {
+    const checkboxes = document.querySelectorAll("#multi-select-status .dropdown-options input[type='checkbox']");
+    const selected = [];
+
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            selected.push(checkbox.parentElement.textContent.trim());
+        }
+    });
+
+    const selectedValueDiv = document.querySelector("#multi-select-status .selected-value");
+
+       if (selected.length === 0) {
+           selectedValueDiv.textContent = "Status"; // Exibe "Status" se nenhum filtro for selecionado
+       } else {
+           const displayText = selected.length <= 2 ? selected.join(", ") : `${selected.length} filtros`;
+           selectedValueDiv.innerHTML = `<span class="status-text">${displayText}</span>`; // Exibe apenas os filtros selecionados
+       }
+
+    // Truncar texto se ultrapassar o tamanho do campo
+   const statusText = selectedValueDiv.querySelector(".status-text");
+       if (statusText && statusText.textContent.length > 22) {
+           statusText.textContent = `${statusText.textContent.slice(0, 19)}...`;
+       }
+}
+
+// Função para associar eventos aos checkboxes
+definirEventosCheckbox = () => {
+    const checkboxes = document.querySelectorAll("#multi-select-status .dropdown-options input[type='checkbox']");
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", atualizarTextoStatus);
+    });
+};
+
+// Garantir que o texto esteja atualizado ao carregar a página
+document.addEventListener("DOMContentLoaded", () => {
+    atualizarTextoStatus();
+    definirEventosCheckbox();
+});
 
 // Função para carregar condicionantes com filtros aplicados
 async function carregarCondicionantes() {
