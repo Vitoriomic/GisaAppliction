@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestão de Ocorrências</title>
     <link rel="stylesheet" href="styleOcorrencias.css">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
 </head>
 <body>
 <header>
@@ -43,6 +44,9 @@
                     <span id="badge-nao-conformidades" class="badge">0</span>
                 </button>
             </div>
+            <div class="button-container" onclick="baixarRelatorio()">
+                <button id="btn-download">Baixar Relatório</button>
+            </div>
         </div>
 
         <!-- Lista dsdaffasfafsfe Ocorrênczezim123ias -->
@@ -56,10 +60,6 @@
     </main>
 </div>
 
-<div class="add-button" onclick="abrirModalAdicionar()">
-    <span class="tooltip">Adicionar Ocorrência</span>
-    <i class="icon-plus"></i>
-</div>
 
 <!-- Modal para detalhes -->
 <div id="modal-ocorrencia" class="modal" style="display: none;">
@@ -81,6 +81,7 @@
         <p><strong>Data de Resolução:</strong> <span id="modal-ocorrencia-data-resolucao"></span></p>
         <p><strong>Evidência:</strong> <a id="modal-ocorrencia-evidencia" target="_blank" style="display: none;">Ver Evidência</a></p>
         <p><strong>Status:</strong> <span id="modal-ocorrencia-status"></span></p>
+        <button id="editar-ocorrencia" class="btn" onclick="abrirModalEditar()">Editar</button>
     </div>
 </div>
 
@@ -131,44 +132,61 @@
 </div>
 
 <!-- Modal para editar ocorrência -->
+<!-- Modal para editar ocorrência -->
+<!-- Modal para editar ocorrência -->
+<!-- Modal de edição -->
 <div id="modal-editar" class="modal" style="display: none;">
     <div class="modal-content">
         <button class="close-button" onclick="fecharModalEditar()">&times;</button>
         <h2>Editar Ocorrência</h2>
-        <form id="form-editar">
-            <!-- Local -->
+        <form id="form-editar" class="form-edit">
+            <!-- Gravidade -->
             <div class="form-group">
-                <label for="local-editar">Local:</label>
-                <select id="local-editar"></select>
-            </div>
-            <!-- Grupo -->
-            <div class="form-group">
-                <label for="grupo-editar">Grupo:</label>
-                <select id="grupo-editar"></select>
-            </div>
-            <!-- Descrição -->
-            <div class="form-group">
-                <label for="descricao-editar">Descrição:</label>
-                <textarea id="descricao-editar"></textarea>
+                <label for="gravidade-editar">Gravidade:</label>
+                <select id="gravidade-editar" required>
+                    <!-- Opções preenchidas dinamicamente -->
+                </select>
             </div>
             <!-- Status -->
             <div class="form-group">
                 <label for="status-editar">Status:</label>
-                <select id="status-editar"></select>
+                <select id="status-editar" required>
+                    <!-- Opções preenchidas dinamicamente -->
+                </select>
             </div>
-            <!-- Data -->
+            <!-- Data Acordada -->
             <div class="form-group">
-                <label for="data-editar">Data:</label>
-                <input type="date" id="data-editar">
+                <label for="data-acordada-editar">Data Acordada:</label>
+                <input type="date" id="data-acordada-editar">
             </div>
-            <!-- Botão -->
+            <!-- Tratamento -->
+            <div class="form-group">
+                <label for="tratamento-editar">Tratamento:</label>
+                <textarea id="tratamento-editar" placeholder="Descreva o tratamento"></textarea>
+            </div>
+            <!-- Data de Resolução -->
+            <div class="form-group">
+                <label for="data-resolucao-editar">Data de Resolução:</label>
+                <input type="date" id="data-resolucao-editar">
+            </div>
+            <!-- Evidência -->
+            <div class="form-group">
+                <label for="evidencia-editar">Evidência (Link):</label>
+                <input type="url" id="evidencia-editar" placeholder="Cole o link da evidência">
+            </div>
+            <!-- Botões -->
             <div class="form-actions">
-                <button type="button" onclick="salvarOcorrencia()">Salvar</button>
+                <button type="button" class="btn-save" onclick="salvarEdicao()">Salvar</button>
+                <button type="button" class="btn-cancel" onclick="fecharModalEditar()">Cancelar</button>
             </div>
         </form>
     </div>
 </div>
 
+
 <script src="scriptOcorrencias.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
 </body>
 </html>

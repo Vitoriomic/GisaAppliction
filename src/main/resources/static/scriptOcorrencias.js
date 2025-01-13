@@ -218,10 +218,10 @@ function abrirModal(ocorrencia) {
             gravidadeElement.style.color = "gray";
             break;
         case "Inconformidade Leve":
-            gravidadeElement.style.color = "lightorange";
+            gravidadeElement.style.color = "orange";
             break;
         case "Inconformidade Média":
-            gravidadeElement.style.color = "orange";
+            gravidadeElement.style.color = "lightcoral";
             break;
         case "Inconformidade Grave":
             gravidadeElement.style.color = "red";
@@ -391,3 +391,223 @@ async function atualizarBadges() {
 // Chamar a função ao carregar a página
 document.addEventListener("DOMContentLoaded", atualizarBadges);
 
+function abrirModalEditar() {
+    if (!ocorrenciaAtual) {
+        console.error("A ocorrência atual não foi definida.");
+        return;
+    }
+
+    document.getElementById("gravidade-editar").value = ocorrenciaAtual.gravidade.gravidadeId || "";
+    document.getElementById("status-editar").value = ocorrenciaAtual.statusOcorrencia.id || "";
+    document.getElementById("data-acordada-editar").value = ocorrenciaAtual.dataAcordada || "";
+    document.getElementById("tratamento-editar").value = ocorrenciaAtual.tratamentoOcorrencia || "";
+    document.getElementById("data-resolucao-editar").value = ocorrenciaAtual.dataResolucao || "";
+    document.getElementById("evidencia-editar").value = ocorrenciaAtual.evidencia || "";
+
+    document.getElementById("modal-editar").style.display = "flex";
+}
+
+
+function fecharModalEditar() {
+    document.getElementById("modal-editar").style.display = "none";
+}
+
+async function salvarEdicao() {
+    const id = ocorrenciaAtual.ocorrenciaId;
+
+    const gravidadeId = document.getElementById("gravidade-editar").value;
+    const statusId = document.getElementById("status-editar").value;
+    const dataAcordada = document.getElementById("data-acordada-editar").value;
+    const tratamento = document.getElementById("tratamento-editar").value;
+    const dataResolucao = document.getElementById("data-resolucao-editar").value;
+    const evidencia = document.getElementById("evidencia-editar").value;
+
+    const ocorrenciaEditada = {
+        gravidade: { gravidadeId },
+        statusOcorrencia: { id: statusId },
+        dataAcordada,
+        tratamentoOcorrencia: tratamento,
+        dataResolucao,
+        evidencia
+    };
+
+    try {
+        const response = await fetch(`/api/ocorrencias/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(ocorrenciaEditada)
+        });
+
+        if (response.ok) {
+            alert("Ocorrência atualizada com sucesso!");
+            fecharModalEditar();
+            carregarOcorrencias();
+        } else {
+            alert("Erro ao atualizar ocorrência.");
+        }
+    } catch (error) {
+        console.error("Erro ao salvar edições:", error);
+    }
+}
+
+
+async function carregarCamposEdicao() {
+    // Carregar opções de status
+    const status = await fetch("/api/status-ocorrencia").then(res => res.json());
+    const statusEditar = document.getElementById("status-editar");
+    statusEditar.innerHTML = ""; // Limpar opções existentes
+    status.forEach(st => {
+        const option = document.createElement("option");
+        option.value = st.id;
+        option.textContent = st.descricao;
+        statusEditar.appendChild(option);
+    });
+}
+async function carregarGravidades() {
+    try {
+        const response = await fetch("/api/gravidade-ocorrencias");
+        const gravidades = await response.json();
+        const gravidadeEditar = document.getElementById("gravidade-editar");
+
+        gravidadeEditar.innerHTML = ""; // Limpar opções existentes
+
+        gravidades.forEach(gravidade => {
+            const option = document.createElement("option");
+            option.value = gravidade.gravidadeId;
+            option.textContent = gravidade.gravidade;
+            gravidadeEditar.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Erro ao carregar gravidades:", error);
+    }
+}
+
+
+
+// Chamar ao carregar a página
+document.addEventListener("DOMContentLoaded", carregarCamposEdicao);
+document.addEventListener("DOMContentLoaded", carregarGravidades);
+
+async function baixarRelatorio() {
+    const obraId = document.getElementById("filtro-obra").value;
+    const statusId = document.getElementById("filtro-status").value;
+    const grupoId = document.getElementById("filtro-grupo").value;
+    const data = document.getElementById("filtro-data").value;
+
+    const params = new URLSearchParams();
+    if (obraId) params.append("obraId", obraId);
+    if (statusId) params.append("statusId", statusId);
+    if (grupoId) params.append("grupoId", grupoId);
+    if (data) params.append("data", data);
+
+    try {
+        const response = await fetch(`/api/ocorrencias/filtros?${params.toString()}`);
+        const ocorrencias = await response.json();
+
+        if (ocorrencias.length === 0) {
+            alert("Nenhuma ocorrência encontrada para os filtros selecionados.");
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        const margemEsquerda = 10;
+        let linha = 20;
+
+        // Cabeçalho do relatório
+        doc.setFontSize(16);
+        doc.text("Relatório de Ocorrências", margemEsquerda, linha);
+        doc.setFontSize(12);
+        linha += 40; // Espaçamento maior no cabeçalho
+        doc.text(`Data de Geração: ${new Date().toLocaleDateString()}`, margemEsquerda, linha);
+        linha += 40; // Espaçamento maior antes da tabela
+
+        // Tabela principal de dados
+        const colunas = ["Local", "Grupo", "Gravidade", "Supervisor", "Data Registro"];
+        const dadosTabela = ocorrencias.map(ocorrencia => [
+            ocorrencia.obra.nome,
+            ocorrencia.grupoOcorrencia.grupoOcorrencia,
+            ocorrencia.gravidade.gravidade,
+            ocorrencia.supervisor.nome,
+            ocorrencia.dataRegistro,
+        ]);
+
+        doc.autoTable({
+            head: [colunas],
+            body: dadosTabela,
+            startY: linha,
+            margin: { left: margemEsquerda, right: margemEsquerda },
+            styles: { fontSize: 10, cellPadding: 8 }, // Espaçamento nas células
+            headStyles: { fillColor: [52, 152, 219], textColor: 255 },
+            alternateRowStyles: { fillColor: [245, 245, 245] },
+        });
+
+        // Posição após a tabela
+        linha = doc.autoTable.previous.finalY + 40; // Espaçamento maior antes das descrições
+
+        // Adicionar descrições detalhadas
+        ocorrencias.forEach((ocorrencia, index) => {
+            const descricao = ocorrencia.ocorrenciaDetalhada || "Não definida";
+            const dataAcordada = ocorrencia.dataAcordada || "Não definida";
+            const atraso = calcularAtraso(ocorrencia.dataAcordada, ocorrencia.statusOcorrencia.descricao) || "Sem atraso";
+
+            // Adicionar linha horizontal para separar as descrições
+            doc.setDrawColor(0); // Preto
+            doc.setLineWidth(0.5);
+            doc.line(margemEsquerda, linha - 10, 200, linha - 10); // Linha horizontal completa
+
+            // Nova seção para cada ocorrência
+            doc.setFontSize(12);
+            doc.setFont("bold");
+            doc.text(`Descrição Detalhada (${index + 1}):`, margemEsquerda, linha);
+            linha += 20; // Espaçamento maior antes do texto da descrição
+
+            doc.setFontSize(10);
+            doc.setFont("normal");
+            doc.text(`Descrição:`, margemEsquerda, linha);
+            linha += 10; // Espaçamento entre título e texto
+
+            // Adicionar descrição e calcular altura necessária
+            const larguraTexto = 190; // Largura máxima permitida para o texto
+            const alturaTexto = doc.getTextDimensions(descricao, { maxWidth: larguraTexto }).h;
+            doc.text(descricao, margemEsquerda, linha, { maxWidth: larguraTexto });
+            linha += alturaTexto + 20; // Adicionar altura da descrição e um espaçamento extra
+
+            doc.text(`Data Acordada: ${dataAcordada}`, margemEsquerda, linha);
+            linha += 20; // Espaçamento após a data
+
+            // Texto do atraso em vermelho
+            doc.setTextColor(255, 0, 0); // Cor vermelha
+            doc.text(`Atraso: ${atraso}`, margemEsquerda, linha);
+            doc.setTextColor(0, 0, 0); // Retornar para cor preta padrão
+            linha += 50; // Espaçamento maior antes do próximo registro
+
+            // Adicionar nova página se necessário
+            if (linha > 260) {
+                doc.addPage();
+                linha = 20;
+            }
+        });
+
+        // Salvar o PDF
+        doc.save("relatorio-ocorrencias.pdf");
+    } catch (error) {
+        console.error("Erro ao gerar relatório:", error);
+        alert("Erro ao gerar relatório. Tente novamente mais tarde.");
+    }
+}
+
+function calcularAtraso(dataAcordada, status) {
+    if (!dataAcordada || status === "Finalizada") return null;
+
+    const hoje = new Date();
+    const data = new Date(dataAcordada);
+
+    if (data < hoje) {
+        const diasAtrasados = Math.ceil((hoje - data) / (1000 * 60 * 60 * 24));
+        return `${diasAtrasados} dias atrasados`;
+    }
+
+    return null;
+}
