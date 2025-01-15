@@ -409,7 +409,6 @@ body.modal-open #main-content-wrapper {
 }
 
 .multi-select-dropdown .selected-value {
-    text-align: left;
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 10px;
@@ -418,13 +417,10 @@ body.modal-open #main-content-wrapper {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .multi-select-dropdown .selected-value::after {
-    content: "⮟";
+    content: "▼";
     font-size: 11px;
     margin-left: 8px;
 }
@@ -510,8 +506,3 @@ body.modal-open #main-content-wrapper {
 
 }
 
-.status-text {
-    display: inline;
-    color: rgb(100, 100, 100); /* Cor acinzentada */
-    font-size: 0.9em; /* Tamanho menor */
-}

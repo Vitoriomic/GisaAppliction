@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciar Condicionantes</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/png" href="/assets/favicon.png">
 </head>
 <body>
 <header>
@@ -19,8 +19,11 @@
                 <option value="">Todas as Obras</option>
             </select>
             <div class="multi-select-dropdown" id="multi-select-status">
-                <div class="selected-value">Status</div>
-                <div class="dropdown-options"></div>
+                <div class="selected-value" onclick="toggleDropdown('multi-select-status')">
+                    Status
+                </div>
+                <div class="dropdown-options">
+                </div>
             </div>
             <select id="filtro-acoes">
                 <option value="">Todas as Ações</option>
@@ -31,7 +34,7 @@
                 <option value="">Protocolada</option>
             </select>
             <input type="text" id="filtro-identificacao" placeholder="Buscar por Identificação">
-            <button id="btn-filtrar" onclick="carregarCondicionantes()">Pesquisar</button>
+            <button id="btn-filtrar" onclick="carregarCondicionantes()">Filtrar</button>
             <span id="loading-spinner" style="display: none; margin-left: 8px;">
         <div class="spinner"></div>
     </span>
@@ -247,6 +250,6 @@
 
 
 
-<script src="script.js"></script>
+<script src="/js/script.js"></script>
 </body>
 </html>
