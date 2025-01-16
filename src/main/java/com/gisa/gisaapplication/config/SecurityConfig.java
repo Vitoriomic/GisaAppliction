@@ -9,8 +9,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 @Configuration
+@EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig {
 
     private final UserDetailsServiceImpl userDetailsService;
@@ -35,7 +38,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Desativa CSRF para simplificação inicial
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/css/**", "/js/**", "/error").permitAll() // Libera acesso público
-                        .requestMatchers("/index", "/ocorrencias", "/condicionantes").authenticated() // Restringe acesso a páginas específicas
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // Apenas para ROLE_ADMIN
+                        .requestMatchers("/user/**").hasRole("USER") // Apenas para ROLE_USER
                         .anyRequest().authenticated() // Qualquer outra requisição precisa de autenticação
                 )
                 .formLogin(login -> login
@@ -51,8 +55,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-
-
-
 }

@@ -4,6 +4,7 @@ import com.gisa.gisaapplication.model.Ocorrencia;
 import com.gisa.gisaapplication.service.OcorrenciaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -55,8 +56,9 @@ public class OcorrenciaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ocorrenciaService.salvarOcorrencia(ocorrencia));
     }
 
-    // Atualizar ocorrência existente
+    // Atualizar ocorrência existente (somente ADMIN)
     @PutMapping("/{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Ocorrencia> atualizarOcorrencia(@PathVariable Integer id, @RequestBody Ocorrencia ocorrenciaAtualizada) {
         try {
             Ocorrencia ocorrenciaExistente = ocorrenciaService.buscarPorId(id);

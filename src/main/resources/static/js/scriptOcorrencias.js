@@ -1,6 +1,46 @@
 // Variável para armazenar a ocorrência atual
 let ocorrenciaAtual = null;
 
+let userRoles = [];
+
+// Função para carregar roles do usuário
+async function carregarRolesUsuario() {
+    try {
+        const response = await fetch("/api/user/info");
+        if (response.ok) {
+            const data = await response.json();
+            userRoles = data.roles; // Armazena as roles
+        } else {
+            console.error("Erro ao obter informações do usuário.");
+        }
+    } catch (error) {
+        console.error("Erro ao carregar roles do usuário:", error);
+    }
+}
+
+// Chamar ao carregar a página
+document.addEventListener("DOMContentLoaded", carregarRolesUsuario);
+
+
+// Função para carregar roles do usuário
+async function carregarRolesUsuario() {
+    try {
+        const response = await fetch("/api/user/info");
+        if (response.ok) {
+            const data = await response.json();
+            userRoles = data.roles; // Armazena as roles
+        } else {
+            console.error("Erro ao obter informações do usuário.");
+        }
+    } catch (error) {
+        console.error("Erro ao carregar roles do usuário:", error);
+    }
+}
+
+// Chamar ao carregar a página
+document.addEventListener("DOMContentLoaded", carregarRolesUsuario);
+
+
 // Função para carregar opções dinâmicas nos filtros
 async function carregarOpcoes() {
     try {
@@ -410,6 +450,13 @@ function abrirModalEditar() {
         return;
     }
 
+    // Verificar se o usuário tem permissão de ADMIN
+    if (!userRoles.includes("ROLE_ADMIN")) {
+        alert("Você não tem permissão para editar esta ocorrência.");
+        return;
+    }
+
+    // Preencher os campos de edição
     document.getElementById("gravidade-editar").value = ocorrenciaAtual.gravidade.gravidadeId || "";
     document.getElementById("status-editar").value = ocorrenciaAtual.statusOcorrencia.id || "";
     document.getElementById("data-acordada-editar").value = ocorrenciaAtual.dataAcordada || "";
@@ -417,8 +464,10 @@ function abrirModalEditar() {
     document.getElementById("data-resolucao-editar").value = ocorrenciaAtual.dataResolucao || "";
     document.getElementById("evidencia-editar").value = ocorrenciaAtual.evidencia || "";
 
+    // Exibir o modal de edição
     document.getElementById("modal-editar").style.display = "flex";
 }
+
 
 
 function fecharModalEditar() {
