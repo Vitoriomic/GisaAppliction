@@ -1,13 +1,17 @@
 package com.gisa.gisaapplication.controller;
 
+import com.gisa.gisaapplication.auth.model.Log;
+import com.gisa.gisaapplication.auth.service.LogService;
 import com.gisa.gisaapplication.model.Ocorrencia;
 import com.gisa.gisaapplication.service.OcorrenciaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -15,9 +19,11 @@ import java.util.List;
 public class OcorrenciaController {
 
     private final OcorrenciaService ocorrenciaService;
+    private final LogService logService;
 
-    public OcorrenciaController(OcorrenciaService ocorrenciaService) {
+    public OcorrenciaController(OcorrenciaService ocorrenciaService, LogService logService) {
         this.ocorrenciaService = ocorrenciaService;
+        this.logService = logService;
     }
 
     // Listar todas as ocorrências
@@ -57,10 +63,18 @@ public class OcorrenciaController {
     }
 
     // Atualizar ocorrência existente (somente ADMIN)
+    // Atualizar ocorrência existente (somente ADMIN)
     @PutMapping("/{id}")
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<Ocorrencia> atualizarOcorrencia(@PathVariable Integer id, @RequestBody Ocorrencia ocorrenciaAtualizada) {
+    public ResponseEntity<Ocorrencia> atualizarOcorrencia(
+            @PathVariable Integer id,
+            @RequestBody Ocorrencia ocorrenciaAtualizada,
+            Authentication authentication) {
         try {
+            if (authentication == null || authentication.getName() == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
             Ocorrencia ocorrenciaExistente = ocorrenciaService.buscarPorId(id);
 
             // Atualizar os campos editáveis
@@ -73,21 +87,18 @@ public class OcorrenciaController {
 
             // Salvar no banco de dados
             Ocorrencia ocorrenciaAtualizadaBD = ocorrenciaService.salvarOcorrencia(ocorrenciaExistente);
+
+            // Registrar o log da ação
+            String action = "Atualização de Ocorrência: ID " + id;
+            logService.registrarLog(action, authentication);
+
             return ResponseEntity.ok(ocorrenciaAtualizadaBD);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
 
-    // Excluir ocorrência por ID
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluirOcorrencia(@PathVariable Integer id) {
-        try {
-            ocorrenciaService.excluirOcorrencia(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
 }

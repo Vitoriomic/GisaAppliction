@@ -11,13 +11,13 @@ public class Log {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "action", nullable = false)
     private String action;
 
-    @Column(nullable = false)
+    @Column(name = "timestamp", nullable = false)
     private LocalDateTime timestamp;
 
-    @Column(nullable = false)
+    @Column(name = "performed_by", nullable = false)
     private String performedBy;
 
     // Getters e Setters
