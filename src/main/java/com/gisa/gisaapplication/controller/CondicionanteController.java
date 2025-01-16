@@ -1,5 +1,6 @@
 package com.gisa.gisaapplication.controller;
 
+import com.gisa.gisaapplication.auth.service.LogService;
 import com.gisa.gisaapplication.model.*;
 import com.gisa.gisaapplication.repository.*;
 import com.gisa.gisaapplication.service.CondicionanteService;
@@ -15,16 +16,23 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.security.core.Authentication;
+
 
 @RestController
 @RequestMapping("/api/condicionantes")
 public class CondicionanteController {
 
     private final CondicionanteService condicionanteService;
+    private final LogService logService;
 
-    public CondicionanteController(CondicionanteService condicionanteService) {
+
+    public CondicionanteController(CondicionanteService condicionanteService, LogService logService) {
         this.condicionanteService = condicionanteService;
+        this.logService = logService;
     }
+
+
 
     // Endpoint para buscar condicionantes com filtros
     @GetMapping
@@ -69,9 +77,10 @@ public class CondicionanteController {
     @Autowired
     private CondicionanteRepository condicionanteRepository;
 
+
     @PostMapping
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<?> createCondicionante(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<?> createCondicionante(@RequestBody Map<String, Object> payload, Authentication authentication) {
         try {
             // Instância da entidade Condicionante
             Condicionante condicionante = new Condicionante();
@@ -142,6 +151,10 @@ public class CondicionanteController {
             // Salvar no banco
             Condicionante condicionanteSalva = condicionanteRepository.save(condicionante);
 
+            // Registrar log
+            String action = "Criação de Condicionante: ID " + condicionanteSalva.getCondicionanteId();
+            logService.registrarLog(action, authentication);
+
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Condicionante criada com sucesso");
             response.put("condicionanteId", condicionanteSalva.getCondicionanteId());
@@ -156,7 +169,10 @@ public class CondicionanteController {
 
     @PutMapping("/{id}")
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<?> atualizarCondicionante(@PathVariable int id, @RequestBody Map<String, Object> payload) {
+    public ResponseEntity<?> atualizarCondicionante(
+            @PathVariable int id,
+            @RequestBody Map<String, Object> payload,
+            Authentication authentication) {
         try {
             // Validação de campos obrigatórios
             List<String> missingFields = new ArrayList<>();
@@ -204,6 +220,11 @@ public class CondicionanteController {
 
             // Salva a atualização
             condicionanteService.salvarCondicionante(condicionanteExistente);
+
+
+            // Registrar log
+            String action = "Atualização de Condicionante: ID " + id;
+            logService.registrarLog(action, authentication);
 
             return ResponseEntity.ok("Condicionante atualizada com sucesso!");
         } catch (Exception e) {

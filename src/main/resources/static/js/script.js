@@ -557,32 +557,7 @@ function fecharModalAdicionar() {
     document.getElementById("modal-adicionar").style.display = "none";
 }
 
-async function excluirCondicionante(id) {
-    if (!userRoles.includes("ROLE_ADMIN")) {
-        alert("Você não tem permissão para excluir esta condicionante.");
-        return;
-    }
-        if (!confirm("Tem certeza de que deseja excluir esta condicionante?")) {
-        return;
-    }
 
-    try {
-        const response = await fetch(`/api/condicionantes/${id}`, {
-            method: "DELETE",
-        });
-
-        if (response.ok) {
-            alert("Condicionante excluída com sucesso!");
-            carregarCondicionantes(); // Atualiza a lista de condicionantes
-        } else {
-            const errorText = await response.text();
-            alert(`Erro ao excluir: ${errorText}`);
-        }
-    } catch (err) {
-        console.error("Erro ao excluir a condicionante:", err);
-        alert(`Erro ao excluir a condicionante: ${err.message}`);
-    }
-}
 function validarFormulario(formId) {
     const form = document.getElementById(formId);
     const inputs = form.querySelectorAll("[required]");

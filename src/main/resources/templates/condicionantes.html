@@ -9,6 +9,9 @@
 </head>
 <body>
 <header>
+    <button onclick="window.location.href='/index'" class="btn-voltar">
+        &#8592;
+    </button>
     <h1>Gerenciar Condicionantes</h1>
 </header>
 <div id="main-content-wrapper">
@@ -76,7 +79,6 @@
         <p><strong>Responsável (Zago):</strong> <span id="modal-condicionante-resp-zago"></span></p>
         <p><strong>Data de Atendimento:</strong> <span id="modal-condicionante-data"></span></p>
         <button class="button-primary" id="editar-condicionante" onclick="abrirModalEditar()">Editar</button>
-        <button class="button-danger" onclick="excluirCondicionante(condicionanteAtual.condicionanteId)">Excluir</button>
     </div>
 </div>
 
