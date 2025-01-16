@@ -6,6 +6,7 @@ import com.gisa.gisaapplication.service.CondicionanteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -69,6 +70,7 @@ public class CondicionanteController {
     private CondicionanteRepository condicionanteRepository;
 
     @PostMapping
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<?> createCondicionante(@RequestBody Map<String, Object> payload) {
         try {
             // Instância da entidade Condicionante
@@ -153,6 +155,7 @@ public class CondicionanteController {
 
 
     @PutMapping("/{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<?> atualizarCondicionante(@PathVariable int id, @RequestBody Map<String, Object> payload) {
         try {
             // Validação de campos obrigatórios
@@ -209,6 +212,7 @@ public class CondicionanteController {
     }
 
     @DeleteMapping("/{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<?> excluirCondicionante(@PathVariable int id) {
         try {
             // Verifica e remove a condicionante diretamente

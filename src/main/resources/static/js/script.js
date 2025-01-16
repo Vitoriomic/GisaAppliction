@@ -1,5 +1,29 @@
 // Função para carregar opções dinâmicas para os filtros
 
+let userRoles = []; // Variável global para armazenar as roles do usuário
+
+async function carregarRolesUsuario() {
+    try {
+        const response = await fetch("/api/user/info");
+        if (response.ok) {
+            const data = await response.json();
+            userRoles = data.roles; // Armazena as roles
+        } else {
+            console.error("Erro ao obter informações do usuário.");
+        }
+    } catch (error) {
+        console.error("Erro ao carregar roles do usuário:", error);
+    }
+}
+
+// Carregar roles ao inicializar a página
+document.addEventListener("DOMContentLoaded", async () => {
+    await carregarRolesUsuario();
+    carregarOpcoes();
+    carregarCondicionantes();
+});
+
+
 let condicionanteAtual = null; // Armazena o condicionante atual para edição
 
 async function carregarOpcoes() {
@@ -162,6 +186,8 @@ function exibirCondicionantes(condicionantes) {
 function abrirModal(condicionante) {
     condicionanteAtual = condicionante; // Armazena o condicionante atual
 
+
+
     document.getElementById("modal-condicionante-obra").textContent = condicionante.obra.nome;
     document.getElementById("modal-condicionante-descricao").textContent = condicionante.condicionante;
     document.getElementById("modal-condicionante-identificacao").textContent = condicionante.identificacao;
@@ -230,7 +256,14 @@ function fecharModal() {
 
 // Abrir modal de adicionar
 function abrirModalAdicionar() {
-    document.getElementById("modal-adicionar").style.display = "flex";
+
+    if (!userRoles.includes("ROLE_ADMIN")) {
+        alert("Você não tem permissão para adicionar esta condicionante.");
+        return;
+    }
+
+
+        document.getElementById("modal-adicionar").style.display = "flex";
     carregarOpcoesAdicionar();
 }
 
@@ -391,6 +424,12 @@ async function abrirModalEditar() {
         return;
     }
 
+    // Verificar se o usuário tem permissão de ADMIN
+    if (!userRoles.includes("ROLE_ADMIN")) {
+        alert("Você não tem permissão para editar esta condicionante.");
+        return;}
+
+
     try {
         // Fechar a modal de detalhes, se estiver aberta
         fecharModal();
@@ -519,7 +558,11 @@ function fecharModalAdicionar() {
 }
 
 async function excluirCondicionante(id) {
-    if (!confirm("Tem certeza de que deseja excluir esta condicionante?")) {
+    if (!userRoles.includes("ROLE_ADMIN")) {
+        alert("Você não tem permissão para excluir esta condicionante.");
+        return;
+    }
+        if (!confirm("Tem certeza de que deseja excluir esta condicionante?")) {
         return;
     }
 
@@ -566,3 +609,4 @@ document.addEventListener("DOMContentLoaded", () => {
     carregarOpcoes();
     carregarCondicionantes();
 });
+
