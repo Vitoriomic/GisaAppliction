@@ -1,5 +1,6 @@
 package com.gisa.gisaapplication.model;
 
+import com.gisa.gisaapplication.auth.model.Log;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
@@ -11,6 +12,9 @@ public class Ocorrencia {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ocorrenciaid")
     private Integer ocorrenciaId;
+
+    @Transient // Evita persistência no banco
+    private Log ultimoLog;
 
     @Column(name = "dataregistro", nullable = false)
     private LocalDate dataRegistro;
@@ -75,6 +79,14 @@ public class Ocorrencia {
 
     public void setOcorrenciaId(Integer ocorrenciaId) {
         this.ocorrenciaId = ocorrenciaId;
+    }
+
+    public Log getUltimoLog() {
+        return ultimoLog;
+    }
+
+    public void setUltimoLog(Log ultimoLog) {
+        this.ultimoLog = ultimoLog;
     }
 
     public LocalDate getDataRegistro() {

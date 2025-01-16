@@ -20,6 +20,7 @@ public class Log {
     @Column(name = "performed_by", nullable = false)
     private String performedBy;
 
+
     // Getters e Setters
     public Long getId() {
         return id;

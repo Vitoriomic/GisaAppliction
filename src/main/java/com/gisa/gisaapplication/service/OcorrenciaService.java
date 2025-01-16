@@ -1,5 +1,6 @@
 package com.gisa.gisaapplication.service;
 
+import com.gisa.gisaapplication.auth.repository.LogRepository;
 import com.gisa.gisaapplication.model.Ocorrencia;
 import com.gisa.gisaapplication.repository.OcorrenciaRepository;
 import org.springframework.stereotype.Service;
@@ -13,9 +14,11 @@ import java.util.stream.Collectors;
 public class OcorrenciaService {
 
     private final OcorrenciaRepository ocorrenciaRepository;
+    private final LogRepository logRepository;
 
-    public OcorrenciaService(OcorrenciaRepository ocorrenciaRepository) {
+    public OcorrenciaService(OcorrenciaRepository ocorrenciaRepository, LogRepository logRepository) {
         this.ocorrenciaRepository = ocorrenciaRepository;
+        this.logRepository = logRepository;
     }
 
     // Processar uma única ocorrência para calcular prazos
@@ -133,4 +136,7 @@ public class OcorrenciaService {
         Ocorrencia ocorrencia = buscarPorId(id);
         ocorrenciaRepository.delete(ocorrencia);
     }
+
+
+
 }

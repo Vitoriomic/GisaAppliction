@@ -92,6 +92,8 @@ public class OcorrenciaController {
             String action = "Atualização de Ocorrência: ID " + id;
             logService.registrarLog(action, authentication);
 
+
+
             return ResponseEntity.ok(ocorrenciaAtualizadaBD);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);

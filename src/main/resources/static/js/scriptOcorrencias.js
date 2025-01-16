@@ -239,6 +239,8 @@ function exibirOcorrencias(ocorrencias) {
                 ? ocorrencia.gravidade.gravidade
                 : "Gravidade não definida";
 
+
+
             card.innerHTML = `
                 <p><strong>ID:</strong> ${ocorrencia.ocorrenciaId}</p>
                 <p><strong>Local:</strong> ${ocorrencia.obra.nome}</p>
